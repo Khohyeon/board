@@ -1,0 +1,18 @@
+spring:
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:static/data/data.sql
+      encoding: utf-8
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+server:
+  servlet:
+    encoding:
+      force-response: true
