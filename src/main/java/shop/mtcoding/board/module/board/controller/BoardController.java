@@ -12,10 +12,9 @@ import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.board.dto.BoardDTO;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
 import shop.mtcoding.board.module.board.dto.BoardResponse;
+import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.service.BoardService;
-import shop.mtcoding.board.module.user.dto.UserDTO;
-import shop.mtcoding.board.module.user.model.User;
 
 import java.util.List;
 import java.util.Optional;

@@ -23,6 +23,8 @@ import shop.mtcoding.board.module.user.dto.LoginRequest;
 import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.model.User;
+import shop.mtcoding.board.util.status.UserStatus;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
@@ -59,8 +61,8 @@ public class UserMockTest {
         Pageable pageable = PageRequest.of(1, 10);
         Page<User> page = new PageImpl<>(
                 List.of(
-                        new User(1, "ssar", "1234", "ssar@nate.com", "USER"),
-                        new User(2, "cos", "1234", "cos@nate.com", "USER")
+                        new User(1, "ssar", "1234", "ssar@nate.com", "USER", UserStatus.ACTIVE),
+                        new User(2, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE)
                 )
         );
 
@@ -95,7 +97,7 @@ public class UserMockTest {
     }
 
     @Test
-    @DisplayName("유저정보 한명 조회 실패")
+    @DisplayName("유저 상세조회 실패")
     void getUserFail() throws Exception {
 
         // given
@@ -118,14 +120,14 @@ public class UserMockTest {
     }
 
     @Test
-    @DisplayName("유저정보 한명 조회")
+    @DisplayName("유저 상세조회")
     void getUserDetail() throws Exception {
 
         // given
         int id = 0;
         given(this.userService.getUser(id))
                 .willReturn(
-                        Optional.of(new User(1, "유저네임", "비밀번호", "이메일", "USER"))
+                        Optional.of(new User(1, "유저네임", "비밀번호", "이메일", "USER", UserStatus.ACTIVE))
                 );
 
 

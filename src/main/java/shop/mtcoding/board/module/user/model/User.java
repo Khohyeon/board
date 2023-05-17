@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.util.RoleType;
+import shop.mtcoding.board.util.status.UserStatus;
 
 @Entity
 @Data
@@ -28,6 +30,8 @@ public class User {
     private String email;
 
     private String role;
+
+    private UserStatus status;
 
     @Builder
     public User(String username, String password, String email) {

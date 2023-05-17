@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.mtcoding.board.module.board.controller.BoardUpdateRequest;
+import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
-import shop.mtcoding.board.module.user.model.User;
 
 import java.util.Optional;
 
@@ -31,7 +30,9 @@ public class BoardService {
     }
 
     public Board update(BoardUpdateRequest boardUpdateRequest, Board board) {
-        return null;
+        board.setTitle(boardUpdateRequest.title());
+        board.setContent(boardUpdateRequest.content());
+        return boardRepository.save(board);
     }
 
     public void delete(Board board) {

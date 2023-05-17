@@ -9,6 +9,7 @@ import shop.mtcoding.board.module.board.dto.BoardResponse;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.model.User;
+import shop.mtcoding.board.util.status.BoardStatus;
 
 
 @Entity
@@ -26,6 +27,9 @@ public class Board {
     private String content;
     @ManyToOne
     private User user;
+
+    private BoardStatus status;
+
     public BoardDTO toDTO() {
         return new BoardDTO(id, title, content);
     }
