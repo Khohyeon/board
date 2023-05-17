@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.mtcoding.board.config.auth.JwtProvider;
 import shop.mtcoding.board.core.exception.Exception400;
+import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.model.User;
@@ -42,8 +43,8 @@ public class UserService {
         }
     }
 
-    public User userJoin(UserDTO userDTO) {
-        User user = userRepository.save(userDTO.toEntity());
+    public User userJoin(JoinRequest joinRequest) {
+        User user = userRepository.save(joinRequest.toEntity());
         return user;
     }
 }

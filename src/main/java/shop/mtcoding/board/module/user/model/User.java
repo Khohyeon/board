@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.util.RoleType;
@@ -36,7 +37,7 @@ public class User {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(username, password, email);
+        return new UserDTO(id, username, password, email, role);
     }
 
     public UserResponse toResponse() {

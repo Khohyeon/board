@@ -22,6 +22,9 @@ dependencies {
     // JWT
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
 
+    // vaild 사용 gradle
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
@@ -29,6 +32,8 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework:spring-test'
 }
 
 tasks.named('test') {

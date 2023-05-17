@@ -45,5 +45,11 @@ public class MyExceptionAdvice {
       ResponseDTO<?> responseDTO = new ResponseDTO<>().fail(-1, 500, "일시적인 서버 오류입니다.", "Null");
       return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> Error(Exception500 e) {
+        ResponseDTO<?> responseDTO = new ResponseDTO<>().fail(-1, 500, "일시적인 서버 오류입니다.", "Null");
+        return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
 
