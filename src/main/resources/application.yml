@@ -1,0 +1,36 @@
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+#      schema-locations:
+#        - classpath:db/table.sql
+      data-locations:
+        - classpath:static/db/data.sql
+  h2:
+    console:
+      enabled: true
+  output:
+    ansi:
+      enabled: always
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        max-request-size: 10MB
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true

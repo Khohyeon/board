@@ -1,0 +1,94 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+= 공지사항 문서 [권한: 관리자]
+
+== 유저 회원가입 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-join/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-join/httpie-request.adoc[]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-join/http-response.adoc[]
+
+=== 응답 정보 [Body]
+include::{snippets}/user-join/response-body.adoc[]
+
+=== 응답 정보 [성공]
+==== [Field]
+include::{snippets}/user-join/response-fields.adoc[]
+
+=== CURL
+include::{snippets}/user-join/curl-request.adoc[]
+
+
+== 유저 로그인 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-login/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-login/httpie-request.adoc[]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-login/http-response.adoc[]
+
+=== 응답 정보 [Body]
+include::{snippets}/user-login/response-body.adoc[]
+
+=== 응답 정보 [성공]
+==== [Field]
+include::{snippets}/user-login/response-fields.adoc[]
+
+=== CURL
+include::{snippets}/user-login/curl-request.adoc[]
+
+== 유저 정보 목록 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-list/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-list/httpie-request.adoc[]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-list/http-response.adoc[]
+
+=== 응답 정보 [Body]
+include::{snippets}/user-list/response-body.adoc[]
+
+=== 응답 정보 [성공]
+
+=== CURL
+include::{snippets}/user-list/curl-request.adoc[]
+
+== 유저 정보 상세목록 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-detail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-detail/httpie-request.adoc[]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-detail/http-response.adoc[]
+
+=== 응답 정보 [Body]
+include::{snippets}/user-detail/response-body.adoc[]
+
+=== 응답 정보 [성공]
+
+=== CURL
+include::{snippets}/user-detail/curl-request.adoc[]
