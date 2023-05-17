@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
+import shop.mtcoding.board.util.RoleType;
 
 @Entity
 @Data
@@ -24,6 +25,8 @@ public class User {
     private String password;
 
     private String email;
+
+    private String role;
 
     @Builder
     public User(String username, String password, String email) {
