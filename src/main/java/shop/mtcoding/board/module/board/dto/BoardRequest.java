@@ -1,6 +1,7 @@
 package shop.mtcoding.board.module.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import shop.mtcoding.board.module.board.model.Board;
 
 public record BoardRequest(
 
@@ -9,4 +10,7 @@ public record BoardRequest(
         @NotBlank(message = "내용을 입력해주세요.")
         String content
 ) {
+        public Board toEntity() {
+                return new Board(title, content);
+        }
 }

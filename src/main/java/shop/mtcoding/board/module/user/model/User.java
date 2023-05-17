@@ -14,7 +14,7 @@ import shop.mtcoding.board.util.RoleType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_tb")
+@Table(name = "USERS")
 public class User {
 
     @Id

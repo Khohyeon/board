@@ -1,6 +1,11 @@
 
-insert into user_tb(username, password, email, role) values ('ssar', '1234', 'ssar@nate.com', 'USER');
-insert into user_tb(username, password, email, role) values ('cos', '1234', 'cos@nate.com', 'USER');
-insert into user_tb(username, password, email, role) values ('love', '1234', 'love@nate.com', 'USER');
+insert into USERS(username, password, email, role) values ('ssar', '1234', 'ssar@nate.com', 'USER');
+insert into USERS(username, password, email, role) values ('cos', '1234', 'cos@nate.com', 'USER');
+insert into USERS(username, password, email, role) values ('love', '1234', 'love@nate.com', 'USER');
+
+
+insert into BOARD(title, content, user_id) values ('제목입니다 1', '내용입니다 1', 1);
+insert into BOARD(title, content, user_id) values ('제목입니다 2', '내용입니다 2', 2);
+insert into BOARD(title, content, user_id) values ('제목입니다 3', '내용입니다 3', 3);
 
 commit ;

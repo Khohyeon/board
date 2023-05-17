@@ -96,7 +96,7 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저정보 한명 조회 실패")
-    void getNoticeFail() throws Exception {
+    void getUserFail() throws Exception {
 
         // given
         int id = 0;
@@ -119,7 +119,7 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저정보 한명 조회")
-    void getNotice() throws Exception {
+    void getUserDetail() throws Exception {
 
         // given
         int id = 0;

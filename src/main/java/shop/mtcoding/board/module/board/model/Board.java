@@ -24,11 +24,15 @@ public class Board {
     private String title;
 
     private String content;
-
     @ManyToOne
     private User user;
     public BoardDTO toDTO() {
         return new BoardDTO(id, title, content);
+    }
+
+    public Board(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     public BoardResponse toResponse() {
