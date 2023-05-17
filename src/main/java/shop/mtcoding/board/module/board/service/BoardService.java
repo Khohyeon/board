@@ -3,6 +3,7 @@ package shop.mtcoding.board.module.board.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import shop.mtcoding.board.module.board.controller.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.user.model.User;
@@ -21,5 +22,13 @@ public class BoardService {
 
     public Board save(BoardRequest boardRequest) {
         return null;
+    }
+
+    public Board update(BoardUpdateRequest boardUpdateRequest, Board board) {
+        return null;
+    }
+
+    public void delete(Board board) {
+
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.board.dto.BoardDTO;
@@ -46,19 +47,49 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardResponse> saveBoard(@Valid @RequestBody BoardRequest boardRequest) {
+    public ResponseEntity<BoardResponse> saveBoard(@Valid @RequestBody BoardRequest boardRequest, Errors errors) {
+
+        if (errors.hasErrors()) {
+            throw new Exception400(errors.getAllErrors().get(0).getDefaultMessage());
+        }
 
         Board save = boardService.save(boardRequest);
 
         return ResponseEntity.ok().body(save.toResponse());
     }
 
-    @PutMapping
-    public ResponseEntity<BoardResponse> updateBoard(@Valid @RequestBody BoardUpdateRequest boardUpdateRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<BoardResponse> updateBoard(@Valid @RequestBody BoardUpdateRequest boardUpdateRequest
+            , Errors errors ,@PathVariable Integer id
+    ) {
 
-        Board save = boardService.save(boardRequest);
+        if (errors.hasErrors()) {
+            throw new Exception400(errors.getAllErrors().get(0).getDefaultMessage());
+        }
 
-        return ResponseEntity.ok().body(save.toResponse());
+        Optional<Board> boardOptional = boardService.getBoard(id);
+
+        if (boardOptional.isEmpty()) {
+            throw new Exception400("게시판의 정보가 없습니다.");
+        }
+
+        Board board = boardService.update(boardUpdateRequest, boardOptional.get());
+
+        return ResponseEntity.ok().body(board.toResponse());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBoard(@PathVariable Integer id) {
+        Optional<Board> boardOptional = boardService.getBoard(id);
+
+        if (boardOptional.isEmpty()) {
+            throw new Exception400("게시판의 정보가 없습니다.");
+        }
+
+        boardService.delete(boardOptional.get());
+
+        return ResponseEntity.ok("삭제가 완료되었습니다.");
+    }
+
 
 }
