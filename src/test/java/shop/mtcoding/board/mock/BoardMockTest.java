@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.board.controller.BoardController;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
@@ -104,6 +105,7 @@ public class BoardMockTest {
         ResultActions perform = this.mvc.perform(
                 get("/board/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
+
         );
 
 
@@ -267,6 +269,7 @@ public class BoardMockTest {
                 .andExpect(status().isBadRequest())
                 .andDo(print())
                 .andExpect(jsonPath("$.msg").value("게시판의 정보가 없습니다."))
+
         ;
     }
 

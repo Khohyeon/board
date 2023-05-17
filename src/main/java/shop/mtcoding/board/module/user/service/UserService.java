@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.board.config.auth.JwtProvider;
 import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
@@ -11,10 +12,12 @@ import shop.mtcoding.board.module.user.dto.LoginRequest;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.model.UserRepository;
+import shop.mtcoding.board.util.status.UserStatus;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -32,19 +35,15 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public String userLogin(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
-
-        if (userOptional.isPresent()) {
-            String jwt = JwtProvider.create(userOptional.get());
-            return jwt;
-        } else {
-            throw new Exception400("username과 password를 다시 확인해주세요.");
-        }
+    @Transactional
+    public User userJoin(JoinRequest joinRequest) {
+        User user = new User(joinRequest.username(), joinRequest.password(), joinRequest.email(), "USER", UserStatus.ACTIVE);
+        userRepository.save(user);
+        return user;
     }
 
-    public User userJoin(JoinRequest joinRequest) {
-        User user = userRepository.save(joinRequest.toEntity());
-        return user;
+    @Transactional
+    public Optional<User> userLogin(LoginRequest loginRequest) {
+        return userRepository.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
     }
 }

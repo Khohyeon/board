@@ -61,14 +61,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new Exception400(result.getAllErrors().get(0).getDefaultMessage());
         }
 
-        String jwtToken = userService.userLogin(loginRequest);
+        Optional<User> userOptional = userService.userLogin(loginRequest);
 
-        return ResponseEntity.ok().header(JwtProvider.HEADER, jwtToken).body("로그인 성공");
+        if (userOptional.isEmpty()) {
+            throw new Exception400("username과 password를 다시 확인해주세요.");
+
+        } else {
+            String jwt = JwtProvider.create(userOptional.get());
+
+            return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(userOptional.get());
+        }
+
     }
 }

@@ -14,7 +14,6 @@ import shop.mtcoding.board.util.status.UserStatus;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "USERS")
 public class User {
@@ -34,10 +33,27 @@ public class User {
     private UserStatus status;
 
     @Builder
+    public User(Integer id, String username, String password, String email, String role, UserStatus status) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.status = status;
+    }
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public User(String username, String password, String email, String role, UserStatus status) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.status = status;
     }
 
     public UserDTO toDTO() {
@@ -45,6 +61,6 @@ public class User {
     }
 
     public UserResponse toResponse() {
-        return new UserResponse(username, password, email);
+        return new UserResponse(id, username, password, email);
     }
 }

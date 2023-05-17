@@ -14,6 +14,8 @@ import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.model.UserRepository;
+import shop.mtcoding.board.util.status.BoardStatus;
+import shop.mtcoding.board.util.status.UserStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,7 @@ public class BoardRepositoryTest {
 
     @BeforeEach
     public void init() {
-        setUp("제목", "내용");
+        setUp("제목", "내용", BoardStatus.ACTIVE);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class BoardRepositoryTest {
     @Transactional
     @DisplayName("게시판 삽입 및 삭제 테스트")
     void insertAndDelete() {
-        Board board = setUp("제목-수정", "내용-수정");
+        Board board = setUp("제목-수정", "내용-수정", BoardStatus.ACTIVE);
         Optional<Board> findBoard = this.boardRepository.findById(board.getId());
 
         if (findBoard.isPresent()) {
@@ -95,10 +97,16 @@ public class BoardRepositoryTest {
 
     }
 
-    public Board setUp(String title, String content) {
+    public Board setUp(String title, String content, BoardStatus status) {
+
+        User user = new User().builder().username("love").password("1234").email("love@nate.com").role("USER").status(UserStatus.ACTIVE).build();
+        this.entityManager.persist(user);
+
         Board board = new Board();
         board.setTitle(title);
         board.setContent(content);
+        board.setUser(user);
+        board.setStatus(status);
         return entityManager.persist(board);
     }
 

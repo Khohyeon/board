@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.config.auth.JwtProvider;
@@ -25,6 +30,8 @@ import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.util.status.UserStatus;
 
+import static org.mockito.ArgumentMatchers.any;
+//import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
@@ -74,6 +81,8 @@ public class UserMockTest {
         ResultActions perform = this.mvc.perform(
                 get("/user?page={page}&size={size}", 1, 10)
                         .accept(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
+
         );
 
 
@@ -107,6 +116,7 @@ public class UserMockTest {
         // When
         ResultActions perform = this.mvc.perform(
                 get("/user/{id}", id)
+//                        .with(csrf())
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -135,6 +145,7 @@ public class UserMockTest {
         ResultActions perform = this.mvc.perform(
                 get("/user/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
         );
 
 
@@ -163,6 +174,7 @@ public class UserMockTest {
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
         );
 
         // then
@@ -181,6 +193,10 @@ public class UserMockTest {
         JoinRequest request = new JoinRequest("", "21323", "ssar@nate.com");
         given(this.userService.userJoin(request)).willReturn(request.toEntity());
 
+        // stub
+//        User cos = newMockUser(1, "cos");
+//        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(cos));
+
 
         // when
         ResultActions perform = this.mvc.perform(
@@ -188,6 +204,7 @@ public class UserMockTest {
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
         );
 
         // then
@@ -210,7 +227,7 @@ public class UserMockTest {
         if (userOptional.isPresent()) {
             String jwt = JwtProvider.create(userOptional.get());
 
-            given(this.userService.userLogin(request)).willReturn(jwt);
+            given(this.userService.userLogin(request)).willReturn(userOptional);
 
 
             // when
@@ -241,7 +258,8 @@ public class UserMockTest {
         if (userOptional.isPresent()) {
             String jwt = JwtProvider.create(userOptional.get());
 
-            given(this.userService.userLogin(request)).willReturn(jwt);
+            given(this.userService.userLogin(request)).willReturn(userOptional);
+
 
 
             // when
