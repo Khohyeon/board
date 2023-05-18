@@ -37,7 +37,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-detail",
                                 responseFields(
-                                ).and(getPlaceResponseField())
+                                ).and(getPlaceResponseField("data."))
                         )
 
                 );
@@ -63,7 +63,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-join",
                                 requestFields(getUserJoinRequestField()),
-                                responseFields().and(getUserJoinField()
+                                responseFields().and(getUserJoinField("data.")
                                 )
                         )
 
@@ -95,7 +95,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-login",
                                 requestFields(getUserLoginRequestField()),
-                                responseFields().and(getUserLoginField()
+                                responseFields().and(getUserLoginField("data.")
                                 )
                         )
 
@@ -103,12 +103,15 @@ public class UserControllerTest extends AbstractIntegrated {
 
     }
 
-    private FieldDescriptor[] getPlaceResponseField() {
+    private FieldDescriptor[] getPlaceResponseField(String prefix) {
         return new FieldDescriptor[] {
-                fieldWithPath("id").description("유저 id"),
-                fieldWithPath("username").description("유저 이름"),
-                fieldWithPath("password").description("유저 비밀번호"),
-                fieldWithPath("email").description("유저 이메일"),
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("status").description("응답 상태"),
+                fieldWithPath("msg").description("응답 메시지"),
+                fieldWithPath(prefix+"id").description("유저 id"),
+                fieldWithPath(prefix+"username").description("유저 이름"),
+                fieldWithPath(prefix+"password").description("유저 비밀번호"),
+                fieldWithPath(prefix+"email").description("유저 이메일"),
         };
     }
 
@@ -120,14 +123,17 @@ public class UserControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getUserJoinField() {
+    private FieldDescriptor[] getUserJoinField(String prefix) {
         return new FieldDescriptor[] {
-                fieldWithPath("id").description("유저 id"),
-                fieldWithPath("username").description("유저 이름"),
-                fieldWithPath("password").description("유저 비밀번호"),
-                fieldWithPath("email").description("유저 이메일"),
-                fieldWithPath("role").description("유저 권한"),
-                fieldWithPath("status").description("유저 상태"),
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("status").description("응답 상태"),
+                fieldWithPath("msg").description("응답 메시지"),
+                fieldWithPath(prefix+"id").description("유저 id"),
+                fieldWithPath(prefix+"username").description("유저 이름"),
+                fieldWithPath(prefix+"password").description("유저 비밀번호"),
+                fieldWithPath(prefix+"email").description("유저 이메일"),
+                fieldWithPath(prefix+"role").description("유저 권한"),
+                fieldWithPath(prefix+"status").description("유저 상태"),
         };
     }
 
@@ -138,14 +144,17 @@ public class UserControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getUserLoginField() {
+    private FieldDescriptor[] getUserLoginField(String prefix) {
         return new FieldDescriptor[] {
-                fieldWithPath("id").description("유저 id"),
-                fieldWithPath("username").description("유저 이름"),
-                fieldWithPath("password").description("유저 비밀번호"),
-                fieldWithPath("email").description("유저 이메일"),
-                fieldWithPath("role").description("유저 권한"),
-                fieldWithPath("status").description("유저 상태"),
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("status").description("응답 상태"),
+                fieldWithPath("msg").description("응답 메시지"),
+                fieldWithPath(prefix+"id").description("유저 id"),
+                fieldWithPath(prefix+"username").description("유저 이름"),
+                fieldWithPath(prefix+"password").description("유저 비밀번호"),
+                fieldWithPath(prefix+"email").description("유저 이메일"),
+                fieldWithPath(prefix+"role").description("유저 권한"),
+                fieldWithPath(prefix+"status").description("유저 상태"),
         };
     }
 }

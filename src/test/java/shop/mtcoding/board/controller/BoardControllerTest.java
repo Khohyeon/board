@@ -65,7 +65,7 @@ public class BoardControllerTest extends AbstractIntegrated {
         BoardRequest request = new BoardRequest("제목", "내용");
 
         this.mockMvc.perform(
-                        post("/board")
+                        post("/user/board")
                                 .content(objectMapper.writeValueAsString(request))
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +88,7 @@ public class BoardControllerTest extends AbstractIntegrated {
         BoardRequest request = new BoardRequest("제목", "내용");
 
         this.mockMvc.perform(
-                        put("/board/1")
+                        put("/user/board/1")
                                 .content(objectMapper.writeValueAsString(request))
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)

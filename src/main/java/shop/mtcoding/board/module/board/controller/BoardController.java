@@ -20,13 +20,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping
+    @GetMapping("/board")
     public ResponseEntity<Page<BoardDTO>> getPage(Pageable pageable) {
         Page<Board> page = boardService.getPage(pageable);
         List<BoardDTO> content = page.getContent().stream().map(Board::toDTO).toList();
@@ -34,7 +33,7 @@ public class BoardController {
         return ResponseEntity.ok(new PageImpl<>(content, pageable, page.getTotalElements()));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/board/{id}")
     public ResponseEntity<BoardResponse> getBoard(@PathVariable Integer id) {
         Optional<Board> boardOptional = boardService.getBoard(id);
 
@@ -45,7 +44,7 @@ public class BoardController {
         return ResponseEntity.ok().body(boardOptional.get().toResponse());
     }
 
-    @PostMapping
+    @PostMapping("/user/board")
     public ResponseEntity<BoardResponse> saveBoard(@Valid @RequestBody BoardRequest boardRequest, Errors errors) {
 
         if (errors.hasErrors()) {
@@ -57,7 +56,7 @@ public class BoardController {
         return ResponseEntity.ok().body(save.toResponse());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/user/board/{id}")
     public ResponseEntity<BoardResponse> updateBoard(@Valid @RequestBody BoardUpdateRequest boardUpdateRequest
             , Errors errors ,@PathVariable Integer id
     ) {
@@ -77,7 +76,7 @@ public class BoardController {
         return ResponseEntity.ok().body(board.toResponse());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/board/{id}")
     public ResponseEntity<String> deleteBoard(@PathVariable Integer id) {
         Optional<Board> boardOptional = boardService.getBoard(id);
 

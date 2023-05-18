@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -17,6 +18,7 @@ import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.model.User;
+import shop.mtcoding.board.util.ResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,16 +42,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Integer id) {
-        Optional<User> user = userService.getUser(id);
-        if (user.isEmpty()) {
+    public ResponseEntity<ResponseDTO<UserResponse>> getUser(@PathVariable Integer id) {
+        Optional<User> userOptional = userService.getUser(id);
+        if (userOptional.isEmpty()) {
             throw new Exception400("유저의 정보가 존재하지 않습니다.");
+        } else {
+            User user = userOptional.get();
+
+            return new ResponseEntity<>(new ResponseDTO<>(1, 200, "유저상세보기", user.toResponse()), HttpStatus.OK);
         }
-        return ResponseEntity.ok(user.get().toResponse());
+
+
     }
 
     @PostMapping("/join")
-    public ResponseEntity<User> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult result) {
+    public ResponseEntity<ResponseDTO<User>> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new Exception400(result.getAllErrors().get(0).getDefaultMessage());
@@ -57,11 +64,13 @@ public class UserController {
 
         User user = userService.userJoin(joinRequest);
 
-        return ResponseEntity.ok().body(user);
+        ResponseDTO<User> responseDTO = new ResponseDTO<>(1, 200, "회원가입 성공", user);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+    public ResponseEntity<ResponseDTO<User>> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new Exception400(result.getAllErrors().get(0).getDefaultMessage());
@@ -75,7 +84,11 @@ public class UserController {
         } else {
             String jwt = JwtProvider.create(userOptional.get());
 
-            return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(userOptional.get());
+            User user = userOptional.get();
+
+            ResponseDTO<User> responseDTO = new ResponseDTO<>(1, 200, "로그인 성공", user);
+
+            return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(responseDTO);
         }
 
     }
