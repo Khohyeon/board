@@ -131,10 +131,10 @@ public class SecurityConfig {
         //         }); // 에러 로그
 
         // 11. 인증 권한 필터 설정
-        http.authorizeRequests((authorize) -> {
-            authorize.requestMatchers("/user/login","/user/join").permitAll() // 필터를 거치지 않음
+        http.authorizeHttpRequests((authorize) -> {
+            authorize.requestMatchers("/users","/users/page","/users/login","/users/join").permitAll() // 필터를 거치지 않음
                     .requestMatchers("/user/**").authenticated()
-                    .requestMatchers("/user/**").hasRole("USER")
+//                    .requestMatchers("/user/**").hasRole("USER")
                     .anyRequest().permitAll();
         });
         // users 로 가는 경우는 필터를 거쳐야 한다.

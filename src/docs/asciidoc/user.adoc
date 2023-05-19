@@ -20,18 +20,38 @@ include::{snippets}/user-join/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/user-join/httpie-request.adoc[]
 
+=== 요청 필드 [Fields]
+include::{snippets}/user-join/request-fields.adoc[]
+
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/user-join/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/user-join/response-body.adoc[]
-
-=== 응답 정보 [성공]
-==== [Field]
+=== 응답 정보 [Field]
 include::{snippets}/user-join/response-fields.adoc[]
 
-=== CURL
-include::{snippets}/user-join/curl-request.adoc[]
+
+== 유저 회원가입 실패 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-join-fail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-join-fail/httpie-request.adoc[]
+
+=== 요청 필드 [Fields]
+include::{snippets}/user-join-fail/request-body.adoc[]
+
+=== 응답 정보 [실패]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-join-fail/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/user-join-fail/response-fields.adoc[]
+
+
 
 
 == 유저 로그인 API
@@ -42,18 +62,38 @@ include::{snippets}/user-login/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/user-login/httpie-request.adoc[]
 
+=== 요청 필드 [Fields]
+include::{snippets}/user-login/request-fields.adoc[]
+
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/user-login/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/user-login/response-body.adoc[]
-
-=== 응답 정보 [성공]
-==== [Field]
+=== 응답 정보 [Field]
 include::{snippets}/user-login/response-fields.adoc[]
 
-=== CURL
-include::{snippets}/user-login/curl-request.adoc[]
+
+== 유저 로그인 실패 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-login-fail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-login-fail/httpie-request.adoc[]
+
+=== 요청 필드 [Fields]
+include::{snippets}/user-login-fail/request-body.adoc[]
+
+=== 응답 정보 [실패]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-login-fail/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/user-login-fail/response-fields.adoc[]
+
+
 
 == 유저 정보 목록 API
 
@@ -63,16 +103,35 @@ include::{snippets}/user-list/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/user-list/httpie-request.adoc[]
 
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/user-list/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/user-list/response-body.adoc[]
+=== 응답 정보 [Field]
+include::{snippets}/user-list/response-fields.adoc[]
+
+
+== 유저 정보 목록 페이지 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-list-page/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-list-page/httpie-request.adoc[]
+
+=== 요청 필드 [Fields]
+include::{snippets}/user-list-page/request-body.adoc[]
 
 === 응답 정보 [성공]
 
-=== CURL
-include::{snippets}/user-list/curl-request.adoc[]
+=== 응답 정보 [HTTP]
+include::{snippets}/user-list-page/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/user-list-page/response-fields.adoc[]
+
+
 
 == 유저 정보 상세목록 API
 
@@ -82,13 +141,27 @@ include::{snippets}/user-detail/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/user-detail/httpie-request.adoc[]
 
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/user-detail/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/user-detail/response-body.adoc[]
+=== 응답 정보 [Field]
+include::{snippets}/user-detail/response-fields.adoc[]
 
-=== 응답 정보 [성공]
 
-=== CURL
-include::{snippets}/user-detail/curl-request.adoc[]
+== 유저 정보 상세목록 실패 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/user-detail-fail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/user-detail-fail/httpie-request.adoc[]
+
+=== 응답 정보 [실패]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/user-detail-fail/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/user-detail-fail/response-fields.adoc[]

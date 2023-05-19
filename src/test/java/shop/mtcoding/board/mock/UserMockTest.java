@@ -12,7 +12,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.config.auth.JwtProvider;
+import shop.mtcoding.board.config.security.SecurityConfig;
+import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.module.user.controller.UserController;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
@@ -54,6 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Bean 대신에 가짜 객체를 사용하는 어노테이션
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("유저 MOCK 테스트")
+@Import(SecurityConfig.class)
 public class UserMockTest {
 
     @Autowired
@@ -76,10 +81,33 @@ public class UserMockTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
+    @Test
+    @DisplayName("유저 전체조회 성공")
+    void ListUser() throws Exception {
+
+        // given
+        List<User> users = userRepository.findAll();
+        given(this.userService.userList()).willReturn(users);
+
+        // When
+        ResultActions perform = this.mvc.perform(
+                get("/users")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+
+
+        // Then
+        perform
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.code").value("1"))
+                .andExpect(jsonPath("$.status").value("200"))
+                .andExpect(jsonPath("$.msg").value("유저전체보기"))
+        ;
+    }
 
     @Test
-    @DisplayName("유저 조회")
-    @WithMockUser(username = "cos", roles = "USER")
+    @DisplayName("유저 조회 페이지")
     void getUser() throws Exception {
         Pageable pageable = PageRequest.of(1, 10);
         Page<User> page = new PageImpl<>(
@@ -95,9 +123,8 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/user?page={page}&size={size}", 1, 10)
+                get("/users/page?page={page}&size={size}", 1, 10)
                         .accept(MediaType.APPLICATION_JSON)
-//                        .with(csrf())
 
         );
 
@@ -123,7 +150,7 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저 상세조회 실패")
-    @WithMockUser(username = "cos", roles = "USER")
+    @WithMockCustomUser
     void getUserFail() throws Exception {
 
         // given
@@ -132,9 +159,9 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/user/{id}", id)
-//                        .with(csrf())
+                get("/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
 
@@ -148,20 +175,20 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저 상세조회")
-    @WithMockUser(username = "cos", roles = "USER")
+    @WithMockCustomUser()
     void getUserDetail() throws Exception {
 
         // given
-        int id = 0;
+        int id = 1;
         given(this.userService.getUser(id))
                 .willReturn(
-                        Optional.of(new User(1, "유저네임", "비밀번호", "이메일", "USER", UserStatus.ACTIVE))
+                        Optional.of(new User(1, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE))
                 );
 
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/user/{id}", id)
+                get("/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
@@ -171,16 +198,15 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.data.username").value("유저네임"))
-                .andExpect(jsonPath("$.data.password").value("비밀번호"))
-                .andExpect(jsonPath("$.data.email").value("이메일"))
+                .andExpect(jsonPath("$.data.username").value("cos"))
+                .andExpect(jsonPath("$.data.password").value("1234"))
+                .andExpect(jsonPath("$.data.email").value("cos@nate.com"))
         ;
     }
 
     @Test
     @DisplayName("유저 회원가입 성공")
-    @WithMockUser(username = "cos", roles = "USER")
-    void JoinUser() throws Exception {
+    void joinUser() throws Exception {
 
         // given
         JoinRequest request = new JoinRequest("ssar", "1234", "ssar@nate.com");
@@ -189,11 +215,10 @@ public class UserMockTest {
 
         // when
         ResultActions perform = this.mvc.perform(
-                post("/user/join")
+                post("/users/join")
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
         // then
@@ -206,7 +231,6 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저 회원가입 실패(Valid)")
-    @WithMockUser(username = "cos", roles = "USER")
     void JoinUserFail() throws Exception {
 
         // given
@@ -215,7 +239,7 @@ public class UserMockTest {
 
         // when
         ResultActions perform = this.mvc.perform(
-                post("/user/join")
+                post("/users/join")
                         .content(objectMapper.writeValueAsString(request))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -238,16 +262,13 @@ public class UserMockTest {
 
         //mock test에 레파지토리 사용?
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+        given(this.userService.userLogin(request)).willReturn(userOptional);
 
         if (userOptional.isPresent()) {
             String jwt = JwtProvider.create(userOptional.get());
-
-            given(this.userService.userLogin(request)).willReturn(userOptional);
-
-
             // when
             ResultActions perform = this.mvc.perform(
-                    post("/user/login")
+                    post("/users/login")
                             .content(objectMapper.writeValueAsString(request))
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -279,7 +300,7 @@ public class UserMockTest {
 
             // when
             ResultActions perform = this.mvc.perform(
-                    post("/user/login")
+                    post("/users/login")
                             .content(objectMapper.writeValueAsString(request))
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)

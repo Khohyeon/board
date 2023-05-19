@@ -7,10 +7,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.board.config.auth.JwtProvider;
+import shop.mtcoding.board.config.auth.MyUserDetails;
 import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -34,6 +36,12 @@ public class UserController {
     }
 
     @GetMapping
+    public ResponseEntity<ResponseDTO<List<User>>> UserList() {
+        List<User> users = userService.userList();
+        return new ResponseEntity<>(new ResponseDTO<>(1, 200, "유저전체보기", users), HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
     public ResponseEntity<Page<UserDTO>> getPage(Pageable pageable) {
         Page<User> page = userService.getPage(pageable);
         List<UserDTO> content = page.getContent().stream().map(User::toDTO).toList();
@@ -41,9 +49,16 @@ public class UserController {
         return ResponseEntity.ok(new PageImpl<>(content, pageable, page.getTotalElements()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<UserResponse>> getUser(@PathVariable Integer id) {
-        Optional<User> userOptional = userService.getUser(id);
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseDTO<UserResponse>> getUser(
+        @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        Optional<User> userOptional = userService.getUser(myUserDetails.getUser().getId());
+
+        if (!myUserDetails.getUser().getRole().equals("USER")) {
+            throw new Exception400("유저만 접근 할 수 있습니다.");
+        }
+
         if (userOptional.isEmpty()) {
             throw new Exception400("유저의 정보가 존재하지 않습니다.");
         } else {
@@ -51,7 +66,6 @@ public class UserController {
 
             return new ResponseEntity<>(new ResponseDTO<>(1, 200, "유저상세보기", user.toResponse()), HttpStatus.OK);
         }
-
 
     }
 

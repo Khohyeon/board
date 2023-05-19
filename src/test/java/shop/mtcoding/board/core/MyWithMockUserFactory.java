@@ -12,7 +12,6 @@ import shop.mtcoding.board.config.auth.MyUserDetails;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.util.status.UserStatus;
 
-import java.time.LocalDateTime;
 public class MyWithMockUserFactory implements WithSecurityContextFactory<MyWithMockUser> {
     @Override
     public SecurityContext createSecurityContext(MyWithMockUser mockUser) {
