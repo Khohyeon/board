@@ -30,6 +30,7 @@ public class User {
 
     private String role;
 
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Builder

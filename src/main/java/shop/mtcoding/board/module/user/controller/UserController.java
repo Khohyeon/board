@@ -5,11 +5,14 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.board.config.auth.JwtProvider;
+import shop.mtcoding.board.config.auth.MyUserDetails;
 import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
@@ -17,12 +20,13 @@ import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.model.User;
+import shop.mtcoding.board.util.ResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -32,6 +36,12 @@ public class UserController {
     }
 
     @GetMapping
+    public ResponseEntity<ResponseDTO<List<User>>> UserList() {
+        List<User> users = userService.userList();
+        return new ResponseEntity<>(new ResponseDTO<>(1, 200, "유저전체보기", users), HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
     public ResponseEntity<Page<UserDTO>> getPage(Pageable pageable) {
         Page<User> page = userService.getPage(pageable);
         List<UserDTO> content = page.getContent().stream().map(User::toDTO).toList();
@@ -39,17 +49,28 @@ public class UserController {
         return ResponseEntity.ok(new PageImpl<>(content, pageable, page.getTotalElements()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Integer id) {
-        Optional<User> user = userService.getUser(id);
-        if (user.isEmpty()) {
-            throw new Exception400("유저의 정보가 존재하지 않습니다.");
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseDTO<UserResponse>> getUser(
+        @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        Optional<User> userOptional = userService.getUser(myUserDetails.getUser().getId());
+
+        if (!myUserDetails.getUser().getRole().equals("USER")) {
+            throw new Exception400("유저만 접근 할 수 있습니다.");
         }
-        return ResponseEntity.ok(user.get().toResponse());
+
+        if (userOptional.isEmpty()) {
+            throw new Exception400("유저의 정보가 존재하지 않습니다.");
+        } else {
+            User user = userOptional.get();
+
+            return new ResponseEntity<>(new ResponseDTO<>(1, 200, "유저상세보기", user.toResponse()), HttpStatus.OK);
+        }
+
     }
 
     @PostMapping("/join")
-    public ResponseEntity<User> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult result) {
+    public ResponseEntity<ResponseDTO<User>> join(@Valid @RequestBody JoinRequest joinRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new Exception400(result.getAllErrors().get(0).getDefaultMessage());
@@ -57,11 +78,13 @@ public class UserController {
 
         User user = userService.userJoin(joinRequest);
 
-        return ResponseEntity.ok().body(user);
+        ResponseDTO<User> responseDTO = new ResponseDTO<>(1, 200, "회원가입 성공", user);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+    public ResponseEntity<ResponseDTO<User>> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new Exception400(result.getAllErrors().get(0).getDefaultMessage());
@@ -75,7 +98,11 @@ public class UserController {
         } else {
             String jwt = JwtProvider.create(userOptional.get());
 
-            return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(userOptional.get());
+            User user = userOptional.get();
+
+            ResponseDTO<User> responseDTO = new ResponseDTO<>(1, 200, "로그인 성공", user);
+
+            return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(responseDTO);
         }
 
     }

@@ -12,6 +12,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.request.ParameterDescriptor;
 //import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,7 +45,7 @@ public class AbstractIntegrated {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation))
-//                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }
 
@@ -53,7 +54,7 @@ public class AbstractIntegrated {
             LoginRequest loginDTO = new LoginRequest("ssar", "1234");
 
             ResultActions perform = this.mockMvc.perform(
-                    post("/user/login")
+                    post("/users/login")
                             .content(objectMapper.writeValueAsString(loginDTO))
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +62,26 @@ public class AbstractIntegrated {
 
             MvcResult mvcResult = perform.andReturn();
             MockHttpServletResponse response = mvcResult.getResponse();
-            return response.getHeader("Authorization");
+            return "bearer" + response.getHeader("Authorization");
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    protected String getAdmin() {
+        try {
+            LoginRequest loginDTO = new LoginRequest("love", "1234");
+
+            ResultActions perform = this.mockMvc.perform(
+                    post("/users/login")
+                            .content(objectMapper.writeValueAsString(loginDTO))
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            );
+
+            MvcResult mvcResult = perform.andReturn();
+            MockHttpServletResponse response = mvcResult.getResponse();
+            return "bearer" + response.getHeader("Authorization");
         } catch (Exception e) {
             return "";
         }
@@ -96,11 +116,10 @@ public class AbstractIntegrated {
 
     protected FieldDescriptor[] getFailResponseField() {
         return new FieldDescriptor[] {
-                fieldWithPath("type").description("type"),
-                fieldWithPath("title").description("에러 코드 (이름)"),
+                fieldWithPath("code").description("에러 코드"),
+                fieldWithPath("msg").description("에러 메시지"),
+                fieldWithPath("data").description("에러 데이터"),
                 fieldWithPath("status").description("에러 코드"),
-                fieldWithPath("detail").description("에러 메세지 (중요)"),
-                fieldWithPath("instance").description("요청 경로")
         };
     }
 

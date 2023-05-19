@@ -1,7 +1,7 @@
 
-insert into USERS(username, password, email, role) values ('ssar', '1234', 'ssar@nate.com', 'USER');
-insert into USERS(username, password, email, role) values ('cos', '1234', 'cos@nate.com', 'USER');
-insert into USERS(username, password, email, role) values ('love', '1234', 'love@nate.com', 'USER');
+insert into USERS(username, password, email, role, status) values ('ssar', '1234', 'ssar@nate.com', 'USER', 'ACTIVE');
+insert into USERS(username, password, email, role, status) values ('cos', '1234', 'cos@nate.com', 'USER', 'ACTIVE');
+insert into USERS(username, password, email, role, status) values ('love', '1234', 'love@nate.com', 'ADMIN', 'ACTIVE');
 
 
 insert into BOARD(title, content, user_id) values ('제목입니다 1', '내용입니다 1', 1);

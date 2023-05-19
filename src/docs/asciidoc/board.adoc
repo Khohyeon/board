@@ -20,18 +20,13 @@ include::{snippets}/board-list/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/board-list/httpie-request.adoc[]
 
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/board-list/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/board-list/response-body.adoc[]
-
-=== 응답 정보 [성공]
-==== [Field]
+=== 응답 정보 [Field]
 include::{snippets}/board-list/response-fields.adoc[]
-
-=== CURL
-include::{snippets}/board-list/curl-request.adoc[]
 
 
 == 게시판 상세보기 API
@@ -42,18 +37,32 @@ include::{snippets}/board-detail-list/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/board-detail-list/httpie-request.adoc[]
 
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/board-detail-list/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/board-detail-list/response-body.adoc[]
-
-=== 응답 정보 [성공]
-==== [Field]
+=== 응답 정보 [Field]
 include::{snippets}/board-detail-list/response-fields.adoc[]
 
-=== CURL
-include::{snippets}/board-detail-list/curl-request.adoc[]
+
+== 게시판 상세보기 실패 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/board-detail-list-fail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/board-detail-list-fail/httpie-request.adoc[]
+
+=== 응답 정보 [실패]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/board-detail-list-fail/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/board-detail-list-fail/response-fields.adoc[]
+
+
 
 == 게시판 등록 API
 
@@ -63,16 +72,35 @@ include::{snippets}/board-save/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/board-save/httpie-request.adoc[]
 
+=== 요청 필드 [Fields]
+include::{snippets}/board-save/request-fields.adoc[]
+
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/board-save/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/board-save/response-body.adoc[]
+=== 응답 정보 [Field]
+include::{snippets}/board-save/response-fields.adoc[]
 
-=== 응답 정보 [성공]
 
-=== CURL
-include::{snippets}/board-save/curl-request.adoc[]
+== 게시판 등록 실패 API
+
+=== 요청 정보 [HTTP]
+include::{snippets}/board-save-fail/http-request.adoc[]
+
+=== 요청 정보 [Path Parameter]
+include::{snippets}/board-save-fail/httpie-request.adoc[]
+
+=== 응답 정보 [실패]
+
+=== 응답 정보 [HTTP]
+include::{snippets}/board-save-fail/http-response.adoc[]
+
+=== 응답 정보 [Field]
+include::{snippets}/board-save-fail/response-fields.adoc[]
+
+
 
 == 게시판 수정 API
 
@@ -82,35 +110,35 @@ include::{snippets}/board-update/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/board-update/httpie-request.adoc[]
 
-=== 응답 정보 [HTTP]
-include::{snippets}/board-update/http-response.adoc[]
-
-=== 응답 정보 [Body]
-include::{snippets}/board-update/response-body.adoc[]
+=== 요청 필드 [Fields]
+include::{snippets}/board-update/request-fields.adoc[]
 
 === 응답 정보 [성공]
 
-=== CURL
-include::{snippets}/board-update/curl-request.adoc[]
+=== 응답 정보 [HTTP]
+include::{snippets}/board-update/http-response.adoc[]
 
-== 게시판 수정 API
+=== 응답 정보 [Field]
+include::{snippets}/board-update/response-fields.adoc[]
+
+
+== 게시판 수정 실패 API
 
 === 요청 정보 [HTTP]
-include::{snippets}/board-update/http-request.adoc[]
+include::{snippets}/board-update-fail/http-request.adoc[]
 
 === 요청 정보 [Path Parameter]
-include::{snippets}/board-update/httpie-request.adoc[]
+include::{snippets}/board-update-fail/httpie-request.adoc[]
+
+=== 응답 정보 [실패]
 
 === 응답 정보 [HTTP]
-include::{snippets}/board-update/http-response.adoc[]
+include::{snippets}/board-update-fail/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/board-update/response-body.adoc[]
+=== 응답 정보 [Field]
+include::{snippets}/board-update-fail/response-fields.adoc[]
 
-=== 응답 정보 [성공]
 
-=== CURL
-include::{snippets}/board-update/curl-request.adoc[]
 
 == 게시판 삭제 API
 
@@ -120,13 +148,10 @@ include::{snippets}/board-delete/http-request.adoc[]
 === 요청 정보 [Path Parameter]
 include::{snippets}/board-delete/httpie-request.adoc[]
 
+=== 응답 정보 [성공]
+
 === 응답 정보 [HTTP]
 include::{snippets}/board-delete/http-response.adoc[]
 
-=== 응답 정보 [Body]
-include::{snippets}/board-delete/response-body.adoc[]
-
-=== 응답 정보 [성공]
-
-=== CURL
-include::{snippets}/board-delete/curl-request.adoc[]
+=== 응답 정보 [Field]
+include::{snippets}/board-delete/response-fields.adoc[]

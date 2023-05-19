@@ -14,6 +14,7 @@ import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.util.status.UserStatus;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,15 +36,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    @Transactional
     public User userJoin(JoinRequest joinRequest) {
         User user = new User(joinRequest.username(), joinRequest.password(), joinRequest.email(), "USER", UserStatus.ACTIVE);
         userRepository.save(user);
         return user;
     }
 
-    @Transactional
     public Optional<User> userLogin(LoginRequest loginRequest) {
         return userRepository.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+    }
+
+    public List<User> userList() {
+        return userRepository.findAll();
     }
 }

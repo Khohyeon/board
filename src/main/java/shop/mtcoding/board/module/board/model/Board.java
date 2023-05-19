@@ -2,6 +2,7 @@ package shop.mtcoding.board.module.board.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import shop.mtcoding.board.module.board.dto.BoardDTO;
@@ -14,7 +15,6 @@ import shop.mtcoding.board.util.status.BoardStatus;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "BOARD")
 public class Board {
@@ -37,6 +37,15 @@ public class Board {
     public Board(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    @Builder
+    public Board(Integer id, String title, String content, User user, BoardStatus status) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.status = status;
     }
 
     public BoardResponse toResponse() {

@@ -5,13 +5,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
+import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
+import shop.mtcoding.board.module.board.model.Board;
+import shop.mtcoding.board.module.user.model.User;
+import shop.mtcoding.board.util.status.BoardStatus;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +39,7 @@ public class BoardControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("board-list",
                                 responseFields(
-                                ).and(getPlaceResponseField())
+                                ).and(getBoardResponseField())
                         )
 
                 );
@@ -43,7 +51,7 @@ public class BoardControllerTest extends AbstractIntegrated {
     void getDetailPage() throws Exception {
 
         this.mockMvc.perform(
-                        get ("/board/1")
+                        get ("/board/{id}",1, 1, "id,desc")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -51,24 +59,41 @@ public class BoardControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("board-detail-list",
                                 responseFields(
-                                ).and(getPlaceDetailResponseField())
+                                ).and(getBoardDetailResponseField())
                         )
 
                 );
     }
 
     @Test
+    @DisplayName("게시판 상세보기 실패")
+    @Transactional
+    void getDetailPageFail() throws Exception {
+
+        this.mockMvc.perform(
+                        get ("/board/{id}",0)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andDo(
+                        document("board-detail-list-fail",
+                                responseFields(getFailResponseField())));
+
+    }
+
+    @Test
     @DisplayName("게시판 등록하기")
-//    @WithUserDetails(value = "Jane@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void saveBoard() throws Exception {
 
         BoardRequest request = new BoardRequest("제목", "내용");
 
         this.mockMvc.perform(
-                        post("/board")
+                        post("/user/board")
                                 .content(objectMapper.writeValueAsString(request))
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("Authorization", getUser())
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -81,17 +106,40 @@ public class BoardControllerTest extends AbstractIntegrated {
     }
 
     @Test
-    @DisplayName("게시판 수정하기")
+    @DisplayName("게시판 등록실패")
 //    @WithUserDetails(value = "Jane@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    void updateBoard() throws Exception {
+    void saveBoardFail() throws Exception {
 
-        BoardRequest request = new BoardRequest("제목", "내용");
+        BoardRequest request = new BoardRequest("", "내용");
 
         this.mockMvc.perform(
-                        put("/board/1")
+                        post("/user/board")
                                 .content(objectMapper.writeValueAsString(request))
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("Authorization", getUser())
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andDo(
+                        document("board-save-fail",
+                                responseFields(getFailResponseField())));
+    }
+
+
+
+    @Test
+    @DisplayName("게시판 수정하기")
+    void updateBoard() throws Exception {
+
+        BoardUpdateRequest request = new BoardUpdateRequest("제목-수정", "내용-수정");
+
+        this.mockMvc.perform(
+                        put("/user/board/{id}",1)
+                                .content(objectMapper.writeValueAsString(request))
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("Authorization", getUser())
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -103,33 +151,58 @@ public class BoardControllerTest extends AbstractIntegrated {
                 );
     }
 
-//    @Test
-//    @DisplayName("게시판 삭제")
-////    @WithUserDetails(value = "Jane@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    void deleteBoard() throws Exception {
-//        this.mockMvc.perform(
-//                        delete("/board/1")
-//                                .accept(MediaType.APPLICATION_JSON_VALUE)
-//                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                )
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(
-//                        document("board-delete",
-//                                responseFields(deleteBoardResponseField())
-//                        )
-//                );
-//
-//    }
+    @Test
+    @DisplayName("게시판 수정실패")
+    void updateBoardFail() throws Exception {
 
+        BoardUpdateRequest request = new BoardUpdateRequest("", "내용-수정");
 
-//    private FieldDescriptor[] deleteBoardResponseField() {
-//        return new FieldDescriptor[]{
-//                fieldWithPath("title").description("게시판 제목"),
-//                fieldWithPath("content").description("게시판 내용")
-//
-//        };
-//    }
+        this.mockMvc.perform(
+                        put("/user/board/{id}",1)
+                                .content(objectMapper.writeValueAsString(request))
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("Authorization", getUser())
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andDo(
+                        document("board-update-fail",
+                                responseFields(getFailResponseField())));
+    }
+
+    @Test
+    @DisplayName("게시판 삭제")
+    void deleteBoard() throws Exception {
+
+        // given
+        new Board().builder().id(1).title("제목").content("내용").user(new User()).status(BoardStatus.ACTIVE).build();
+
+        this.mockMvc.perform(
+                        delete("/user/board/{id}",1)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("Authorization", getUser())
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("board-delete",
+                                responseFields(deleteBoardResponseField())
+                        )
+                );
+
+    }
+
+    private FieldDescriptor[] deleteBoardResponseField() {
+        return new FieldDescriptor[]{
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("status").description("응답 상태코드"),
+                fieldWithPath("msg").description("응답 메시지"),
+                fieldWithPath("data").description("응답 데이터")
+
+        };
+    }
     private FieldDescriptor[] getBoardRequestField() {
         return new FieldDescriptor[]{
                 fieldWithPath("title").description("게시판 제목"),
@@ -137,6 +210,7 @@ public class BoardControllerTest extends AbstractIntegrated {
 
         };
     }
+
     private FieldDescriptor[] postBoardResponseField() {
         return new FieldDescriptor[]{
                 fieldWithPath("title").description("게시판 제목"),
@@ -145,7 +219,7 @@ public class BoardControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getPlaceDetailResponseField() {
+    private FieldDescriptor[] getBoardDetailResponseField() {
         return new FieldDescriptor[]{
                 fieldWithPath("title").description("게시판 제목"),
                 fieldWithPath("content").description("게시판 내용")
@@ -153,7 +227,7 @@ public class BoardControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getPlaceResponseField() {
+    private FieldDescriptor[] getBoardResponseField() {
         return new FieldDescriptor[]{
                 fieldWithPath("content[].id").description("게시판 id"),
                 fieldWithPath("content[].title").description("게시판 제목"),
