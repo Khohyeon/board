@@ -1,16 +1,12 @@
 package shop.mtcoding.board.module.user.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
-import shop.mtcoding.board.util.RoleType;
-import shop.mtcoding.board.util.status.UserStatus;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 @Entity
 @Data

@@ -1,7 +1,6 @@
 package shop.mtcoding.board.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +19,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import shop.mtcoding.board.config.auth.MyUserDetails;
-import shop.mtcoding.board.core.WithMockCustomAdmin;
+import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.core.WithMockCustomUser;
-import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.board.controller.BoardController;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
@@ -33,19 +29,17 @@ import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
 import shop.mtcoding.board.module.board.service.BoardService;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.util.status.BoardStatus;
-import shop.mtcoding.board.util.status.UserStatus;
+import shop.mtcoding.board.module.board.status.BoardStatus;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.securityContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BoardController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -137,7 +131,7 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("게시판의 정보가 없습니다."))
+                .andExpect(jsonPath("$.detail").value("게시판의 정보가 없습니다."))
         ;
     }
 
@@ -220,7 +214,7 @@ public class BoardMockTest {
         // then
         perform.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("제목을 입력해주세요."));
+                .andExpect(jsonPath("$.detail").value("제목을 입력해주세요."));
     }
 
     @Test
@@ -247,7 +241,7 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("제목을 입력해주세요."))
+                .andExpect(jsonPath("$.detail").value("제목을 입력해주세요."))
         ;
     }
 
@@ -309,7 +303,7 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("게시판의 정보가 없습니다."))
+                .andExpect(jsonPath("$.detail").value("게시판의 정보가 없습니다."))
 
         ;
     }
@@ -337,7 +331,7 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("삭제가 완료되었습니다."));
+                .andExpect(content().string("삭제가 완료되었습니다."));;
 
     }
 }

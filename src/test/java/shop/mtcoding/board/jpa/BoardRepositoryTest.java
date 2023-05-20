@@ -13,9 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.module.user.model.UserRepository;
-import shop.mtcoding.board.util.status.BoardStatus;
-import shop.mtcoding.board.util.status.UserStatus;
+import shop.mtcoding.board.module.board.status.BoardStatus;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.util.List;
 import java.util.Optional;

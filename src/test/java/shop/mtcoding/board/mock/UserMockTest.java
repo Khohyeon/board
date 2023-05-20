@@ -2,17 +2,12 @@ package shop.mtcoding.board.mock;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -24,12 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import shop.mtcoding.board.config.auth.JwtProvider;
-import shop.mtcoding.board.config.security.SecurityConfig;
+import shop.mtcoding.board.auth.JwtProvider;
+import shop.mtcoding.board.config.SecurityConfig;
 import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.module.user.controller.UserController;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
@@ -37,7 +30,7 @@ import shop.mtcoding.board.module.user.dto.LoginRequest;
 import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.util.status.UserStatus;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import static org.mockito.ArgumentMatchers.any;
 //import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -100,9 +93,6 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.code").value("1"))
-                .andExpect(jsonPath("$.status").value("200"))
-                .andExpect(jsonPath("$.msg").value("유저전체보기"))
         ;
     }
 
@@ -159,7 +149,7 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/{id}", id)
+                get("/users/detail")
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
@@ -169,7 +159,7 @@ public class UserMockTest {
         perform
                 .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("유저의 정보가 존재하지 않습니다."))
+                .andExpect(jsonPath("$.detail").value("유저의 정보가 존재하지 않습니다."))
         ;
     }
 
@@ -188,7 +178,7 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/{id}", id)
+                get("/users/detail")
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
@@ -198,9 +188,9 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.data.username").value("cos"))
-                .andExpect(jsonPath("$.data.password").value("1234"))
-                .andExpect(jsonPath("$.data.email").value("cos@nate.com"))
+                .andExpect(jsonPath("$.username").value("cos"))
+                .andExpect(jsonPath("$.password").value("1234"))
+                .andExpect(jsonPath("$.email").value("cos@nate.com"))
         ;
     }
 
@@ -224,9 +214,9 @@ public class UserMockTest {
         // then
         perform.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.data.username").value("ssar"))
-                .andExpect(jsonPath("$.data.password").value("1234"))
-                .andExpect(jsonPath("$.data.email").value("ssar@nate.com"));
+                .andExpect(jsonPath("$.username").value("ssar"))
+                .andExpect(jsonPath("$.password").value("1234"))
+                .andExpect(jsonPath("$.email").value("ssar@nate.com"));
     }
 
     @Test
@@ -249,7 +239,7 @@ public class UserMockTest {
         // then
         perform.andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(jsonPath("$.msg").value("유저 이름을 입력해주세요."));
+                .andExpect(jsonPath("$.detail").value("유저 이름을 입력해주세요."));
     }
 
 

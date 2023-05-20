@@ -1,4 +1,4 @@
-package shop.mtcoding.board.config.filter;
+package shop.mtcoding.board.auth;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -13,8 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import shop.mtcoding.board.config.auth.JwtProvider;
-import shop.mtcoding.board.config.auth.MyUserDetails;
+import shop.mtcoding.board.auth.JwtProvider;
+import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.module.user.model.User;
 
 
@@ -55,6 +55,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (SignatureVerificationException sve) {
             log.error("토큰 검증 실패");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token fail");
         } catch (TokenExpiredException tee) {
             log.error("토큰 만료됨");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

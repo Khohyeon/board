@@ -38,7 +38,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-list",
                                 responseFields(
-                                ).and(getUserListResponseField("data[]."))
+                                ).and(getUserListResponseField())
                         )
 
                 );
@@ -77,26 +77,25 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-detail",
                                 responseFields(
-                                ).and(getUserResponseField("data."))
+                                ).and(getUserResponseField())
                         )
 
                 );
     }
 
     @Test
-    @DisplayName("유저 세부정보 실패 테스트")
+    @DisplayName("비로그인 유저 조회 실패 테스트")
     void detailUserFail() throws Exception {
 
         this.mockMvc.perform(
-                        get("/users/{id}",1)
+                        get("/users/detail")
                                 .accept(MediaType.APPLICATION_JSON)
-                                .header("Authorization", getUser())
+//                                .header("Authorization", getUser())
                 )
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(
-                        document("user-detail-fail",
-                                responseFields(getFailResponseField())));
+                        document("user-detail-fail"));
     }
 
     @Test
@@ -119,7 +118,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-join",
                                 requestFields(getUserJoinRequestField()),
-                                responseFields().and(getUserJoinField("data.")
+                                responseFields().and(getUserJoinField()
                                 )
                         )
 
@@ -174,7 +173,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-login",
                                 requestFields(getUserLoginRequestField()),
-                                responseFields().and(getUserLoginField("data.")
+                                responseFields().and(getUserLoginField()
                                 )
                         )
 
@@ -209,29 +208,23 @@ public class UserControllerTest extends AbstractIntegrated {
 
     }
 
-    private FieldDescriptor[] getUserListResponseField(String prefix) {
+    private FieldDescriptor[] getUserListResponseField() {
         return new FieldDescriptor[]{
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("status").description("응답 상태"),
-                fieldWithPath("msg").description("응답 메시지"),
-                fieldWithPath(prefix + "id").description("유저 id"),
-                fieldWithPath(prefix + "username").description("유저 이름"),
-                fieldWithPath(prefix + "password").description("유저 비밀번호"),
-                fieldWithPath(prefix + "email").description("유저 이메일"),
-                fieldWithPath(prefix + "role").description("유저 권한"),
-                fieldWithPath(prefix + "status").description("유저 상태"),
+                fieldWithPath("[].id").description("유저 id"),
+                fieldWithPath("[].username").description("유저 이름"),
+                fieldWithPath("[].password").description("유저 비밀번호"),
+                fieldWithPath("[].email").description("유저 이메일"),
+                fieldWithPath("[].role").description("유저 권한"),
+                fieldWithPath("[].status").description("유저 상태"),
         };
     }
 
-    private FieldDescriptor[] getUserResponseField(String prefix) {
+    private FieldDescriptor[] getUserResponseField() {
         return new FieldDescriptor[]{
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("status").description("응답 상태"),
-                fieldWithPath("msg").description("응답 메시지"),
-                fieldWithPath(prefix + "id").description("유저 id"),
-                fieldWithPath(prefix + "username").description("유저 이름"),
-                fieldWithPath(prefix + "password").description("유저 비밀번호"),
-                fieldWithPath(prefix + "email").description("유저 이메일"),
+                fieldWithPath("id").description("유저 id"),
+                fieldWithPath("username").description("유저 이름"),
+                fieldWithPath("password").description("유저 비밀번호"),
+                fieldWithPath("email").description("유저 이메일"),
         };
     }
 
@@ -243,17 +236,14 @@ public class UserControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getUserJoinField(String prefix) {
+    private FieldDescriptor[] getUserJoinField() {
         return new FieldDescriptor[]{
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("status").description("응답 상태"),
-                fieldWithPath("msg").description("응답 메시지"),
-                fieldWithPath(prefix + "id").description("유저 id"),
-                fieldWithPath(prefix + "username").description("유저 이름"),
-                fieldWithPath(prefix + "password").description("유저 비밀번호"),
-                fieldWithPath(prefix + "email").description("유저 이메일"),
-                fieldWithPath(prefix + "role").description("유저 권한"),
-                fieldWithPath(prefix + "status").description("유저 상태"),
+                fieldWithPath("id").description("유저 id"),
+                fieldWithPath("username").description("유저 이름"),
+                fieldWithPath("password").description("유저 비밀번호"),
+                fieldWithPath("email").description("유저 이메일"),
+                fieldWithPath("role").description("유저 권한"),
+                fieldWithPath("status").description("유저 활성화상태"),
         };
     }
 
@@ -264,17 +254,14 @@ public class UserControllerTest extends AbstractIntegrated {
         };
     }
 
-    private FieldDescriptor[] getUserLoginField(String prefix) {
+    private FieldDescriptor[] getUserLoginField() {
         return new FieldDescriptor[]{
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("status").description("응답 상태"),
-                fieldWithPath("msg").description("응답 메시지"),
-                fieldWithPath(prefix + "id").description("유저 id"),
-                fieldWithPath(prefix + "username").description("유저 이름"),
-                fieldWithPath(prefix + "password").description("유저 비밀번호"),
-                fieldWithPath(prefix + "email").description("유저 이메일"),
-                fieldWithPath(prefix + "role").description("유저 권한"),
-                fieldWithPath(prefix + "status").description("유저 상태"),
+                fieldWithPath("id").description("유저 id"),
+                fieldWithPath("username").description("유저 이름"),
+                fieldWithPath("password").description("유저 비밀번호"),
+                fieldWithPath("email").description("유저 이메일"),
+                fieldWithPath("role").description("유저 권한"),
+                fieldWithPath("status").description("유저 활성화상태"),
         };
     }
 

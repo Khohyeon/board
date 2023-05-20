@@ -1,4 +1,4 @@
-package shop.mtcoding.board.config.security;
+package shop.mtcoding.board.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import shop.mtcoding.board.config.filter.JwtAuthorizationFilter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import shop.mtcoding.board.auth.JwtAuthorizationFilter;
 
 
 @Slf4j
@@ -86,32 +84,39 @@ public class SecurityConfig {
         http.apply(new CustomSecurityFilterManager());
 
         // 9. 인증 실패 처리
-//        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-//            // checkpoint - 예외핸들러 처리를 할 수가 없다 왜? dispatcher serlvet 전에 있기 때문에 예외 처리를 못한다.
-//            log.debug("디버그 : 인증실패 : " + authException.getMessage());
-//            log.info("인포 : 인증실패 : " + authException.getMessage());
-//            log.warn("워닝 : 인증실패 : " + authException.getMessage());
-//            log.error("에러 : 인증실패 : " + authException.getMessage());
-//
-//            response.setContentType("text/plain; chatset=utf-8");
-//            response.setStatus(401);
-//            response.getWriter().println("인증 실패");
-//        });
+        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
+            // checkpoint - 예외핸들러 처리를 할 수가 없다 왜? dispatcher serlvet 전에 있기 때문에 예외 처리를 못한다.
+            response.setContentType("text/plain; chatset=utf-8");
+            response.setStatus(401);
+            response.getWriter().println(
+                    "{\n" +
+                    "type : about:blank \n" +
+                    "title : UNAUTHORIZED \n"+
+                    "status : 401 \n" +
+                    "detail : " + authException.getMessage() + "\n"+
+                    "instance : " + request.getServletPath() + "\n"+
+                            "}"
+            );
+        });
 
 
 
         // 10. 권한 실패 처리
-//        http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
-//            // checkpoint -> 예외 핸들러 처리
-//            log.debug("디버그 : 권한 실패 : " + accessDeniedException.getMessage());
-//            log.info("인포 : 권한 실패 : " + accessDeniedException.getMessage());
-//            log.warn("워닝 : 권한 실패 : " + accessDeniedException.getMessage());
-//            log.error("에러 : 권한 실패 : " + accessDeniedException.getMessage());
-//
-//            response.setContentType("text/plain; charset=utf-8");
-//            response.setStatus(403);
-//            response.getWriter().println("권한 실패 ");
-//        });
+        http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
+
+            // checkpoint -> 예외 핸들러 처리
+            response.setContentType("text/plain; charset=utf-8");
+            response.setStatus(403);
+            response.getWriter().println(
+                    "{\n" +
+                            "type : about:blank \n" +
+                            "title : FORBIDDEN \n"+
+                            "status : 403 \n" +
+                            "detail : " + accessDeniedException.getMessage() + "\n"+
+                            "instance : " + request.getServletPath() + "\n"+
+                            "}"
+            );
+        });
 
 
         // // Form 로그인 설정
@@ -133,8 +138,8 @@ public class SecurityConfig {
         // 11. 인증 권한 필터 설정
         http.authorizeHttpRequests((authorize) -> {
             authorize.requestMatchers("/users","/users/page","/users/login","/users/join").permitAll() // 필터를 거치지 않음
-                    .requestMatchers("/user/**").authenticated()
-//                    .requestMatchers("/user/**").hasRole("USER")
+                    .requestMatchers("/user/**", "/users/detail").authenticated()
+//                    .requestMatchers("/user/**","/users/detail").hasRole("ADMIN")
                     .anyRequest().permitAll();
         });
         // users 로 가는 경우는 필터를 거쳐야 한다.

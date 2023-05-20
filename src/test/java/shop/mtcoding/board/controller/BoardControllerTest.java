@@ -5,21 +5,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.util.status.BoardStatus;
+import shop.mtcoding.board.module.board.status.BoardStatus;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +43,6 @@ public class BoardControllerTest extends AbstractIntegrated {
 
     @Test
     @DisplayName("게시판 상세보기")
-    @Transactional
     void getDetailPage() throws Exception {
 
         this.mockMvc.perform(
@@ -67,7 +62,6 @@ public class BoardControllerTest extends AbstractIntegrated {
 
     @Test
     @DisplayName("게시판 상세보기 실패")
-    @Transactional
     void getDetailPageFail() throws Exception {
 
         this.mockMvc.perform(
@@ -176,33 +170,23 @@ public class BoardControllerTest extends AbstractIntegrated {
     void deleteBoard() throws Exception {
 
         // given
-        new Board().builder().id(1).title("제목").content("내용").user(new User()).status(BoardStatus.ACTIVE).build();
+//        Board board = Board.builder().id(1).title("제목").content("내용").user(new User()).status(BoardStatus.ACTIVE).build();
 
         this.mockMvc.perform(
                         delete("/user/board/{id}",1)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("Authorization", getUser())
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("board-delete",
-                                responseFields(deleteBoardResponseField())
+                        document("board-delete"
+//                                responseFields(deleteBoardResponseField())
                         )
                 );
 
     }
 
-    private FieldDescriptor[] deleteBoardResponseField() {
-        return new FieldDescriptor[]{
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("status").description("응답 상태코드"),
-                fieldWithPath("msg").description("응답 메시지"),
-                fieldWithPath("data").description("응답 데이터")
-
-        };
-    }
     private FieldDescriptor[] getBoardRequestField() {
         return new FieldDescriptor[]{
                 fieldWithPath("title").description("게시판 제목"),
