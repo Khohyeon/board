@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import shop.mtcoding.board.common.BaseTime;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.status.UserStatus;
@@ -12,7 +13,7 @@ import shop.mtcoding.board.module.user.status.UserStatus;
 @Data
 @NoArgsConstructor
 @Table(name = "USERS")
-public class User {
+public class User extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
