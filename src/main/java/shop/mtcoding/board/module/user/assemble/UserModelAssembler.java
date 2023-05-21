@@ -18,9 +18,7 @@ public UserModelAssembler() {
 
     @Override
     public UserModel toModel(User user) {
-
         MyUserDetails myUserDetails = new MyUserDetails(user);
-
         UserModel userModel = new UserModel(user);
         userModel.add(linkTo(methodOn(UserController.class).getUser(myUserDetails)).withSelfRel());
         return userModel;

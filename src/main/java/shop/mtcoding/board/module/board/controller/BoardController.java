@@ -5,17 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.exception.Exception400;
-import shop.mtcoding.board.module.board.dto.BoardDTO;
-import shop.mtcoding.board.module.board.dto.BoardRequest;
-import shop.mtcoding.board.module.board.dto.BoardResponse;
-import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
+import shop.mtcoding.board.module.board.dto.*;
 import shop.mtcoding.board.module.board.model.Board;
+import shop.mtcoding.board.module.board.model.BoardModel;
 import shop.mtcoding.board.module.board.service.BoardService;
 
 import java.util.List;
@@ -23,9 +24,12 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@ExposesResourceFor(BoardModel.class)
 public class BoardController {
 
     private final BoardService boardService;
+
+    private final EntityLinks entityLinks;
 
     @GetMapping("/board")
     public ResponseEntity<Page<BoardDTO>> getPage(Pageable pageable) {
@@ -36,14 +40,18 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<BoardResponse> getBoard(@PathVariable Integer id) {
+    public ResponseEntity<BoardLinkResponse> getBoard(@PathVariable Integer id) {
+
+        Link link = entityLinks.linkToItemResource(BoardModel.class, id);
         Optional<Board> boardOptional = boardService.getBoard(id);
+
+        System.out.println("디버그 " + link.getHref());
 
         if (boardOptional.isEmpty()) {
             throw new Exception400("게시판의 정보가 없습니다.");
         }
 
-        return ResponseEntity.ok().body(boardOptional.get().toResponse());
+        return ResponseEntity.ok().body(boardOptional.get().toResponse1(link.getHref()));
     }
 
     @PostMapping("/user/board")

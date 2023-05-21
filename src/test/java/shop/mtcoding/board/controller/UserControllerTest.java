@@ -216,6 +216,8 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("[].email").description("유저 이메일"),
                 fieldWithPath("[].role").description("유저 권한"),
                 fieldWithPath("[].status").description("유저 상태"),
+                fieldWithPath("[].createdDate").description("가입 시간"),
+                fieldWithPath("[].modifiedDate").description("수정 시간"),
         };
     }
 
@@ -244,6 +246,8 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("email").description("유저 이메일"),
                 fieldWithPath("role").description("유저 권한"),
                 fieldWithPath("status").description("유저 활성화상태"),
+                fieldWithPath("createdDate").description("가입 시간"),
+                fieldWithPath("modifiedDate").description("수정 시간"),
         };
     }
 
@@ -262,6 +266,8 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("email").description("유저 이메일"),
                 fieldWithPath("role").description("유저 권한"),
                 fieldWithPath("status").description("유저 활성화상태"),
+                fieldWithPath("createdDate").description("가입 시간"),
+                fieldWithPath("modifiedDate").description("수정 시간"),
         };
     }
 

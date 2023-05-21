@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import shop.mtcoding.board.common.BaseTime;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.status.UserStatus;
@@ -25,13 +26,13 @@ public class User extends BaseTime {
 
     private String email;
 
-    private String role;
+    private RoleType role;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Builder
-    public User(Integer id, String username, String password, String email, String role, UserStatus status) {
+    public User(Integer id, String username, String password, String email, RoleType role, UserStatus status) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -46,7 +47,7 @@ public class User extends BaseTime {
         this.email = email;
     }
 
-    public User(String username, String password, String email, String role, UserStatus status) {
+    public User(String username, String password, String email, RoleType role, UserStatus status) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -61,4 +62,5 @@ public class User extends BaseTime {
     public UserResponse toResponse() {
         return new UserResponse(id, username, password, email);
     }
+
 }

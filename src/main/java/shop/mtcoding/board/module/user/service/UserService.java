@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.board.common.RoleType;
+import shop.mtcoding.board.exception.Exception403;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
 import shop.mtcoding.board.module.user.model.User;
@@ -29,17 +31,27 @@ public class UserService {
     }
 
     public Optional<User> getUser(Integer id) {
-        return userRepository.findById(id);
+        return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE);
     }
 
     public User userJoin(JoinRequest joinRequest) {
-        User user = new User(joinRequest.username(), joinRequest.password(), joinRequest.email(), "USER", UserStatus.ACTIVE);
+        User user = new User(joinRequest.username(), joinRequest.password(), joinRequest.email(), RoleType.USER, UserStatus.ACTIVE);
         userRepository.save(user);
         return user;
     }
 
     public Optional<User> userLogin(LoginRequest loginRequest) {
-        return userRepository.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+
+        Optional<User> userOptional = userRepository.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+        if (userOptional.isEmpty()) {
+            throw new Exception403("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        if (userOptional.get().getStatus().equals(UserStatus.INACTIVE)) {
+            throw new Exception403("비활성화된 계정입니다.");
+        }
+
+        return userOptional;
     }
 
     public List<User> userList() {
