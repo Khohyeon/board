@@ -19,7 +19,11 @@ repositories {
 }
 
 dependencies {
-    // restdoc
+
+    // hateoas
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    // restdocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 

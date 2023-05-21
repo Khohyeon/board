@@ -1,4 +1,4 @@
-package shop.mtcoding.board.util.status;
+package shop.mtcoding.board.module.user.status;
 
 public enum UserStatus {
     ACTIVE, INACTIVE

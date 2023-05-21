@@ -1,4 +1,4 @@
-package shop.mtcoding.board.config.auth;
+package shop.mtcoding.board.auth;
 
 import java.util.Date;
 

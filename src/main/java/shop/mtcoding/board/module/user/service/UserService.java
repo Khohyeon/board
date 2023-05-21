@@ -2,17 +2,13 @@ package shop.mtcoding.board.module.user.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.board.config.auth.JwtProvider;
-import shop.mtcoding.board.core.exception.Exception400;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
-import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.model.UserRepository;
-import shop.mtcoding.board.util.status.UserStatus;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.util.List;
 import java.util.Optional;

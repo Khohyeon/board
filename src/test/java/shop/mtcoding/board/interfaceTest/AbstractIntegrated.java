@@ -62,7 +62,7 @@ public class AbstractIntegrated {
 
             MvcResult mvcResult = perform.andReturn();
             MockHttpServletResponse response = mvcResult.getResponse();
-            return "bearer" + response.getHeader("Authorization");
+            return response.getHeader("Authorization");
         } catch (Exception e) {
             return "";
         }
@@ -81,7 +81,7 @@ public class AbstractIntegrated {
 
             MvcResult mvcResult = perform.andReturn();
             MockHttpServletResponse response = mvcResult.getResponse();
-            return "bearer" + response.getHeader("Authorization");
+            return response.getHeader("Authorization");
         } catch (Exception e) {
             return "";
         }
@@ -116,10 +116,11 @@ public class AbstractIntegrated {
 
     protected FieldDescriptor[] getFailResponseField() {
         return new FieldDescriptor[] {
-                fieldWithPath("code").description("에러 코드"),
-                fieldWithPath("msg").description("에러 메시지"),
-                fieldWithPath("data").description("에러 데이터"),
-                fieldWithPath("status").description("에러 코드"),
+                fieldWithPath("type").description("에러 코드"),
+                fieldWithPath("title").description("에러 메시지"),
+                fieldWithPath("detail").description("에러 데이터"),
+                fieldWithPath("instance").description("에러 코드"),
+                fieldWithPath("status").description("에러 상태코드"),
         };
     }
 

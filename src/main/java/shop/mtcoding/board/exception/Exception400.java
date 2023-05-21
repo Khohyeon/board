@@ -1,8 +1,7 @@
-package shop.mtcoding.board.core.exception;
+package shop.mtcoding.board.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.board.util.ResponseDTO;
 
 @Getter
 public class Exception400 extends RuntimeException {

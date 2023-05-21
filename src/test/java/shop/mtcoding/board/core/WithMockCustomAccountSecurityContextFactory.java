@@ -18,17 +18,12 @@
 package shop.mtcoding.board.core;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-import shop.mtcoding.board.config.auth.MyUserDetails;
+import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.module.user.model.UserRepository;
-import shop.mtcoding.board.util.status.UserStatus;
-
-import java.util.List;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 public class WithMockCustomAccountSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomUser> {
 

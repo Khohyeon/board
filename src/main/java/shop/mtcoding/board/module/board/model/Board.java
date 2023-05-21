@@ -1,23 +1,21 @@
 package shop.mtcoding.board.module.board.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import shop.mtcoding.board.common.BaseTime;
 import shop.mtcoding.board.module.board.dto.BoardDTO;
 import shop.mtcoding.board.module.board.dto.BoardResponse;
-import shop.mtcoding.board.module.user.dto.UserDTO;
-import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.util.status.BoardStatus;
+import shop.mtcoding.board.module.board.status.BoardStatus;
 
 
 @Entity
 @Data
 @NoArgsConstructor
 @Table(name = "BOARD")
-public class Board {
+public class Board extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
