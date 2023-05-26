@@ -1,6 +1,6 @@
 
 insert into USERS(username, password, email, role, status) values ('ssar', '1234', 'ssar@nate.com', 'USER', 'ACTIVE');
-insert into USERS(username, password, email, role, status) values ('cos', '1234', 'cos@nate.com', 'USER', 'ACTIVE');
+insert into USERS(username, password, email, role, status) values ('cos', '1234', 'cos@nate.com', 'MANAGER', 'ACTIVE');
 insert into USERS(username, password, email, role, status) values ('love', '1234', 'love@nate.com', 'ADMIN', 'ACTIVE');
 
 

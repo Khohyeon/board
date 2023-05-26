@@ -1,13 +1,10 @@
 package shop.mtcoding.board.module.user.model;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
-import shop.mtcoding.board.module.board.model.Board;
-import shop.mtcoding.board.module.board.model.BoardModel;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.time.format.DateTimeFormatter;
@@ -25,7 +22,7 @@ public class UserModel extends RepresentationModel<UserModel> {
 
     String email;
 
-    String role;
+    RoleType role;
 
     String createDate;
 

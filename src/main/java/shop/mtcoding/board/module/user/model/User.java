@@ -26,6 +26,7 @@ public class User extends BaseTime {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private RoleType role;
 
     @Enumerated(EnumType.STRING)
@@ -55,8 +56,8 @@ public class User extends BaseTime {
         this.status = status;
     }
 
-    public UserDTO toDTO() {
-        return new UserDTO(id, username, password, email, role);
+    public UserModel toUserModel() {
+        return new UserModel(User.builder().build());
     }
 
     public UserResponse toResponse() {

@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
 import shop.mtcoding.board.module.user.model.User;
@@ -98,7 +99,7 @@ public class BoardRepositoryTest {
 
     public Board setUp(String title, String content, BoardStatus status) {
 
-        User user = new User().builder().username("love").password("1234").email("love@nate.com").role("USER").status(UserStatus.ACTIVE).build();
+        User user = new User().builder().username("love").password("1234").email("love@nate.com").role(RoleType.USER).status(UserStatus.ACTIVE).build();
         this.entityManager.persist(user);
 
         Board board = new Board();

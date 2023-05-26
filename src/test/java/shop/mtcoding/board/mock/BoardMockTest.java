@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.auth.MyUserDetails;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.module.board.controller.BoardController;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
@@ -72,8 +73,8 @@ public class BoardMockTest {
     @WithMockUser(username = "cos", roles = "USER")
     void getBoard() throws Exception {
         Pageable pageable = PageRequest.of(1, 10);
-        User user1 = new User(1, "ssar", "1234", "ssar@nate.com", "USER", UserStatus.ACTIVE);
-        User user2 = new User(2, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE);
+        User user1 = new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE);
+        User user2 = new User(2, "cos", "1234", "cos@nate.com", RoleType.USER, UserStatus.ACTIVE);
         Page<Board> page = new PageImpl<>(
                 List.of(
 
@@ -286,7 +287,7 @@ public class BoardMockTest {
     @WithMockUser(username = "cos", roles = "USER")
     void deleteBoardFail() throws Exception {
 
-        MyUserDetails myUserDetails = new MyUserDetails(new User(1, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE));
+        MyUserDetails myUserDetails = new MyUserDetails(new User(1, "cos", "1234", "cos@nate.com", RoleType.USER, UserStatus.ACTIVE));
 
         // given
         int id = myUserDetails.getUser().getId();
@@ -313,7 +314,7 @@ public class BoardMockTest {
     @WithMockUser(username = "cos", roles = "USER")
     void deleteBoard() throws Exception {
 
-        MyUserDetails myUserDetails = new MyUserDetails(new User(1, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE));
+        MyUserDetails myUserDetails = new MyUserDetails(new User(1, "cos", "1234", "cos@nate.com", RoleType.USER, UserStatus.ACTIVE));
 
         // given
         int id = myUserDetails.getUser().getId();

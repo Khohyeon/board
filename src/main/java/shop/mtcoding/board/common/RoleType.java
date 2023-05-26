@@ -2,5 +2,5 @@ package shop.mtcoding.board.common;
 
 public enum RoleType {
 
-    USER, ADMIN
+    USER, ADMIN, MANAGER
 }

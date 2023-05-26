@@ -13,6 +13,7 @@ import shop.mtcoding.board.core.WithMockCustomUser;
 import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -38,7 +39,7 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-list",
                                 responseFields(
-                                ).and(getUserListResponseField())
+                                ).and(getUserListPageResponseField())
                         )
 
                 );
@@ -153,7 +154,7 @@ public class UserControllerTest extends AbstractIntegrated {
     @DisplayName("유저 로그인 테스트")
     void userLogin() throws Exception {
 
-        LoginRequest loginDTO = new LoginRequest("cos", "1234");
+        LoginRequest loginDTO = new LoginRequest("cos", "1234", UserStatus.ACTIVE);
 
 
         ResultActions perform = this.mockMvc.perform(
@@ -185,7 +186,7 @@ public class UserControllerTest extends AbstractIntegrated {
     @DisplayName("유저 로그인 실패 테스트")
     void userLoginFail() throws Exception {
 
-        LoginRequest loginDTO = new LoginRequest("", "1234");
+        LoginRequest loginDTO = new LoginRequest("", "1234", UserStatus.ACTIVE);
 
 
         ResultActions perform = this.mockMvc.perform(

@@ -102,7 +102,7 @@ public class SecurityConfig {
         // 10. 권한 실패 처리
             .accessDeniedHandler((request, response, accessDeniedException) -> {
                 log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : "+accessDeniedException.getMessage());
-                MyFilterResponseUtil.result(HttpStatus.FORBIDDEN, request, response, new Exception403("권한이 없습니다"));
+                MyFilterResponseUtil.result(HttpStatus.FORBIDDEN, request, response, new Exception403("권한이 없습니다."));
             });
 
 
@@ -125,7 +125,7 @@ public class SecurityConfig {
         // 11. 인증 권한 필터 설정
         http.authorizeHttpRequests((authorize) -> {
             authorize.requestMatchers("/users","/users/page","/users/login","/users/join").permitAll() // 필터를 거치지 않음
-                    .requestMatchers("/user/**", "/users/detail").authenticated()
+                    .requestMatchers("/user/**", "/users/{id}").authenticated()
 //                    .requestMatchers("/user/**","/users/detail").hasRole("ADMIN")
                     .anyRequest().permitAll();
         });

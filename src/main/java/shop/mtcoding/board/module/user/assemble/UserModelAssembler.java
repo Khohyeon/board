@@ -1,5 +1,6 @@
 package shop.mtcoding.board.module.user.assemble;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import shop.mtcoding.board.auth.MyUserDetails;
@@ -20,12 +21,21 @@ public UserModelAssembler() {
     public UserModel toModel(User user) {
         MyUserDetails myUserDetails = new MyUserDetails(user);
         UserModel userModel = new UserModel(user);
-        userModel.add(linkTo(methodOn(UserController.class).getUser(myUserDetails)).withSelfRel());
+        userModel.add(linkTo(methodOn(UserController.class).getUser(myUserDetails, user.getId())).withSelfRel());
         return userModel;
     }
 
     @Override
-    public CollectionModel<UserModel> toCollectionModel(Iterable<? extends User> entities) {
-        return super.toCollectionModel(entities);
+    public CollectionModel<UserModel> toCollectionModel(Iterable<? extends User> users) {
+        return super.toCollectionModel(users);
     }
+
+//    @Override
+//    public CollectionModel<UserModel> toCollectionModel(Iterable<? extends User> users) {
+//        MyUserDetails myUserDetails = new MyUserDetails(users.iterator().next());
+//        UserModel userModel = new UserModel(users.iterator().next());
+//        userModel.add(linkTo(methodOn(UserController.class).getUser(myUserDetails, myUserDetails.getUser().getId())).withSelfRel());
+//        return super.toCollectionModel(users);
+//    }
+
 }

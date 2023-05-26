@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class AbstractIntegrated {
 
     protected String getUser() {
         try {
-            LoginRequest loginDTO = new LoginRequest("ssar", "1234");
+            LoginRequest loginDTO = new LoginRequest("ssar", "1234", UserStatus.ACTIVE);
 
             ResultActions perform = this.mockMvc.perform(
                     post("/users/login")
@@ -70,7 +71,7 @@ public class AbstractIntegrated {
 
     protected String getAdmin() {
         try {
-            LoginRequest loginDTO = new LoginRequest("love", "1234");
+            LoginRequest loginDTO = new LoginRequest("love", "1234", UserStatus.ACTIVE);
 
             ResultActions perform = this.mockMvc.perform(
                     post("/users/login")

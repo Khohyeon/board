@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 import shop.mtcoding.board.auth.MyUserDetails;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.status.UserStatus;
 
@@ -21,7 +22,7 @@ public class MyWithMockUserFactory implements WithSecurityContextFactory<MyWithM
                 .password("1234")
                 .email(mockUser.username()+"@nate.com")
 //                .fullName(mockUser.fullName())
-                .role("USER")
+                .role(RoleType.USER)
                 .status(UserStatus.ACTIVE)
 //                .createdAt(LocalDateTime.now())
                 .build();
