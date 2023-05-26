@@ -44,7 +44,7 @@ public class BoardRepositoryTest {
         Assertions.assertNotEquals(boardList.size(), 0);
 
         Board board = boardList.get(0);
-        Assertions.assertEquals(board.getTitle(), "제목1");
+        Assertions.assertEquals(board.getTitle(), "제목입니다 1");
 
     }
 
@@ -56,7 +56,7 @@ public class BoardRepositoryTest {
 
         if (optionalBoard.isPresent()) {
             Board board = optionalBoard.get();
-            Assertions.assertEquals(board.getTitle() , "제목1");
+            Assertions.assertEquals(board.getTitle() , "제목입니다 1");
         }
     }
 

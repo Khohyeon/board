@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<UserModel>> getPage(
+    public ResponseEntity<PagedModel<UserModel>> getPage(
             Pageable pageable,
                    PagedResourcesAssembler<User> assembler) {
         Page<User> page = userService.getPage(pageable);

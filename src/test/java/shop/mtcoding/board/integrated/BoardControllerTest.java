@@ -1,17 +1,12 @@
-package shop.mtcoding.board.controller;
+package shop.mtcoding.board.integrated;
 
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
-import shop.mtcoding.board.module.board.model.Board;
-import shop.mtcoding.board.module.user.model.User;
-import shop.mtcoding.board.module.board.status.BoardStatus;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -205,38 +200,45 @@ public class BoardControllerTest extends AbstractIntegrated {
 
     private FieldDescriptor[] getBoardDetailResponseField() {
         return new FieldDescriptor[]{
-                fieldWithPath("title").description("게시판 제목"),
-                fieldWithPath("content").description("게시판 내용")
-
+                fieldWithPath("id").description("게시판 id"),
+                fieldWithPath("subject").description("게시판 제목"),
+                fieldWithPath("content").description("게시판 내용"),
+                fieldWithPath("createDate").description("게시판 생성시간"),
+                fieldWithPath("boardStatus").description("게시판 상태코드"),
+                fieldWithPath("_links.self.href").description("url"),
+                fieldWithPath("user.id").description("유저 id"),
+                fieldWithPath("user.username").description("유저 이름"),
+                fieldWithPath("user.password").description("유저 비밀번호"),
+                fieldWithPath("user.email").description("유저 이메일"),
+                fieldWithPath("user.role").description("유저 권한"),
+                fieldWithPath("user.createDate").description("유저 생성시간"),
+                fieldWithPath("user.status").description("유저 상태코드"),
+                fieldWithPath("user._links.self.href").description("url"),
+                fieldWithPath("_links.self.href").description("page url"),
         };
     }
 
     private FieldDescriptor[] getBoardResponseField() {
         return new FieldDescriptor[]{
-                fieldWithPath("content[].id").description("게시판 id"),
-                fieldWithPath("content[].title").description("게시판 제목"),
-                fieldWithPath("content[].content").description("게시판 내용"),
-                fieldWithPath("pageable.sort").description("정렬 정보"),
-                fieldWithPath("pageable.sort.empty").description("정렬 없음"),
-                fieldWithPath("pageable.sort.sorted").description("정렬됨"),
-                fieldWithPath("pageable.sort.unsorted").description("정렬되지 않음"),
-                fieldWithPath("pageable.offset").description("오프셋"),
-                fieldWithPath("pageable.pageSize").description("페이지 크기"),
-                fieldWithPath("pageable.pageNumber").description("페이지 번호"),
-                fieldWithPath("pageable.paged").description("페이징 여부"),
-                fieldWithPath("pageable.unpaged").description("페이징 안함"),
-                fieldWithPath("last").description("마지막 페이지 여부"),
-                fieldWithPath("totalPages").description("전체 페이지 수"),
-                fieldWithPath("totalElements").description("전체 요소 수"),
-                fieldWithPath("size").description("현재 페이지 크기"),
-                fieldWithPath("number").description("현재 페이지 번호"),
-                fieldWithPath("sort.empty").description("정렬 정보 없음"),
-                fieldWithPath("sort.sorted").description("정렬됨"),
-                fieldWithPath("sort.unsorted").description("정렬되지 않음"),
-                fieldWithPath("first").description("첫 번째 페이지 여부"),
-                fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
-                fieldWithPath("empty").description("비어 있는지 여부")
-
+                fieldWithPath("_embedded.boards[].id").description("게시판 id"),
+                fieldWithPath("_embedded.boards[].subject").description("게시판 제목"),
+                fieldWithPath("_embedded.boards[].content").description("게시판 내용"),
+                fieldWithPath("_embedded.boards[].createDate").description("게시판 생성시간"),
+                fieldWithPath("_embedded.boards[].boardStatus").description("게시판 상태코드"),
+                fieldWithPath("_embedded.boards[]._links.self.href").description("url"),
+                fieldWithPath("_embedded.boards[].user.id").description("유저 id"),
+                fieldWithPath("_embedded.boards[].user.username").description("유저 이름"),
+                fieldWithPath("_embedded.boards[].user.password").description("유저 비밀번호"),
+                fieldWithPath("_embedded.boards[].user.email").description("유저 이메일"),
+                fieldWithPath("_embedded.boards[].user.role").description("유저 권한"),
+                fieldWithPath("_embedded.boards[].user.createDate").description("유저 생성시간"),
+                fieldWithPath("_embedded.boards[].user.status").description("유저 상태코드"),
+                fieldWithPath("_embedded.boards[].user._links.self.href").description("url"),
+                fieldWithPath("_links.self.href").description("page url"),
+                fieldWithPath("page.size").description("page 사이즈"),
+                fieldWithPath("page.totalElements").description("page 총 개수"),
+                fieldWithPath("page.totalPages").description("page 총 개수"),
+                fieldWithPath("page.number").description("page 번호"),
 
         };
     }
