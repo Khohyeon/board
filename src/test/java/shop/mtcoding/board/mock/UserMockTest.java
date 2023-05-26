@@ -42,6 +42,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -204,7 +205,7 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/id", user.getId())
+                get("/users/{id}", user.getId())
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -213,9 +214,14 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.username").value("cos"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("ssar"))
                 .andExpect(jsonPath("$.password").value("1234"))
-                .andExpect(jsonPath("$.email").value("cos@nate.com"))
+                .andExpect(jsonPath("$.email").value("ssar@nate.com"))
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.createDate").value(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
+                .andExpect(jsonPath("$.status").value(UserStatus.ACTIVE.name()))
+                .andExpect(jsonPath("$._links").exists());
         ;
     }
 

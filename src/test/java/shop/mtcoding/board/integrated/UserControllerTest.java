@@ -46,7 +46,7 @@ public class UserControllerTest extends AbstractIntegrated {
     void detailUser() throws Exception {
 
         this.mockMvc.perform(
-                        get("/users/detail")
+                        get("/users/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .header("Authorization", getUser())
                 )
@@ -66,14 +66,15 @@ public class UserControllerTest extends AbstractIntegrated {
     void detailUserFail() throws Exception {
 
         this.mockMvc.perform(
-                        get("/users/detail")
+                        get("/users/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
 //                                .header("Authorization", getUser())
                 )
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(
-                        document("user-detail-fail"));
+                        document("user-detail-fail",
+                                responseFields(getFailResponseField())));
     }
 
     @Test
@@ -205,6 +206,10 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("username").description("유저 이름"),
                 fieldWithPath("password").description("유저 비밀번호"),
                 fieldWithPath("email").description("유저 이메일"),
+                fieldWithPath("role").description("유저 권한"),
+                fieldWithPath("createDate").description("유저 생성 시간"),
+                fieldWithPath("status").description("유저 활성화 상태"),
+                fieldWithPath("_links.self.href").description("유저 상세보기 URL"),
         };
     }
 
