@@ -50,8 +50,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserModel> getUser(
-        @AuthenticationPrincipal MyUserDetails myUserDetails,
-        @PathVariable Integer id
+            @PathVariable Integer id,
+        @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         // 관리자는 모든 유저를 볼 수 있음
         if (!myUserDetails.getUser().getId().equals(id)) {
@@ -65,8 +65,8 @@ public class UserController {
         if (userOptional.isEmpty()) {
             throw new Exception400("유저의 정보가 존재하지 않습니다.");
         }
-        User user = userOptional.get();
-        return ResponseEntity.ok(new UserModelAssembler().toModel(user));
+            return ResponseEntity.ok(new UserModelAssembler().toModel(userOptional.get()));
+
     }
 
     @PostMapping("/join")

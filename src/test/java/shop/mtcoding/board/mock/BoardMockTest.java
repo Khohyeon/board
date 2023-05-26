@@ -99,14 +99,27 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.content[0].id").value(1))
-                .andExpect(jsonPath("$.content[0].title").value("제목1"))
-                .andExpect(jsonPath("$.content[0].content").value("내용1"))
+                .andExpect(jsonPath("$._embedded.boards[0].id").value(1))
+                .andExpect(jsonPath("$._embedded.boards[0].subject").value("제목1"))
+                .andExpect(jsonPath("$._embedded.boards[0].content").value("내용1"))
+                .andExpect(jsonPath("$._embedded.boards[0].user.id").value(1))
+                .andExpect(jsonPath("$._embedded.boards[0].user.username").value("ssar"))
+                .andExpect(jsonPath("$._embedded.boards[0].user.password").value("1234"))
+                .andExpect(jsonPath("$._embedded.boards[0].user.email").value("ssar@nate.com"))
+                .andExpect(jsonPath("$._embedded.boards[0].user.role").value("USER"))
+                .andExpect(jsonPath("$._embedded.boards[0].user._links.self.href").value("http://localhost/users/1"))
+                .andExpect(jsonPath("$._embedded.boards[0]._links.self.href").value("http://localhost/board/1"))
 
 
-                .andExpect(jsonPath("$.content[1].id").value(2))
-                .andExpect(jsonPath("$.content[1].title").value("제목2"))
-                .andExpect(jsonPath("$.content[1].content").value("내용2"))
+                .andExpect(jsonPath("$._embedded.boards[1].id").value(2))
+                .andExpect(jsonPath("$._embedded.boards[1].subject").value("제목2"))
+                .andExpect(jsonPath("$._embedded.boards[1].content").value("내용2"))
+                .andExpect(jsonPath("$._embedded.boards[1].user.id").value(2))
+                .andExpect(jsonPath("$._embedded.boards[1].user.username").value("cos"))
+                .andExpect(jsonPath("$._embedded.boards[1].user.password").value("1234"))
+                .andExpect(jsonPath("$._embedded.boards[1].user.email").value("cos@nate.com"))
+                .andExpect(jsonPath("$._embedded.boards[1].user.role").value("USER"))
+                .andExpect(jsonPath("$._embedded.boards[1].user._links.self.href").value("http://localhost/users/2"))
         ;
     }
 
@@ -139,7 +152,7 @@ public class BoardMockTest {
     @Test
     @DisplayName("게시판 상세 조회")
     @WithMockUser(username = "cos", roles = "USER")
-    void getUserDetail() throws Exception {
+    void getBoardDetail() throws Exception {
 
         // given
         int id = 0;
@@ -161,7 +174,8 @@ public class BoardMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.title").value("제목"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.subject").value("제목"))
                 .andExpect(jsonPath("$.content").value("내용"))
         ;
     }

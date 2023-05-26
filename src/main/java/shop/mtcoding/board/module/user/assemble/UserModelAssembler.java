@@ -21,7 +21,7 @@ public UserModelAssembler() {
     public UserModel toModel(User user) {
         MyUserDetails myUserDetails = new MyUserDetails(user);
         UserModel userModel = new UserModel(user);
-        userModel.add(linkTo(methodOn(UserController.class).getUser(myUserDetails, user.getId())).withSelfRel());
+        userModel.add(linkTo(methodOn(UserController.class).getUser(user.getId(), myUserDetails)).withSelfRel());
         return userModel;
     }
 

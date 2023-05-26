@@ -26,6 +26,7 @@ import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.config.SecurityConfig;
 import shop.mtcoding.board.core.WithMockCustomUser;
+import shop.mtcoding.board.example.UserExample;
 import shop.mtcoding.board.module.user.controller.UserController;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
@@ -33,6 +34,7 @@ import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.status.UserStatus;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 //import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -66,15 +68,6 @@ public class UserMockTest {
     private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    public void setup() {
-        // 인증된 Mock 사용자 설정
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-    }
 
     @Test
     @DisplayName("유저 전체 조회")
@@ -121,7 +114,7 @@ public class UserMockTest {
     }
 
     @Test
-    @DisplayName("유저 상세조회 시큐리티에 걸리는 실패(권한 x)")
+    @DisplayName("유저 상세조회 시큐리티에 걸리는 실패(인증 x)")
     void getUserFail() throws Exception {
 
         // given
@@ -138,9 +131,9 @@ public class UserMockTest {
 
         // Then
         perform
-                .andExpect(status().isForbidden())
+                .andExpect(status().isUnauthorized())
                 .andDo(print())
-                .andExpect(jsonPath("$.detail").value("권한이 없습니다."))
+                .andExpect(jsonPath("$.detail").value("인증되지 않았습니다"))
         ;
     }
 
@@ -199,21 +192,20 @@ public class UserMockTest {
     @WithMockCustomUser
     void getUserDetail() throws Exception {
 
-        User user = new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE);
+        User user = UserExample.user;
+        LocalDateTime now = LocalDateTime.now();
+        user.changeCreatedDate(now);
 
         // given
-        int id = 1;
-        given(this.userService.getUser(id))
+        given(this.userService.getUser(user.getId()))
                 .willReturn(
-                        Optional.of(user)
+                        Optional.of( new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE))
                 );
-
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/id", id)
+                get("/users/id", user.getId())
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
 
