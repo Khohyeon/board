@@ -50,8 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModel> getUser(
-            @PathVariable Integer id,
+    public ResponseEntity<UserModel> getUser(@PathVariable Integer id,
         @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         // 관리자는 모든 유저를 볼 수 있음
@@ -60,6 +59,7 @@ public class UserController {
                 throw new Exception403("권한이 없습니다.");
             }
         }
+
 
         // 일반 사용자는 자기 데이터가 맞는지 체크하고 exception 발생
         Optional<User> userOptional = userService.getUser(myUserDetails.getUser().getId());
@@ -93,7 +93,6 @@ public class UserController {
 
         if (userOptional.isEmpty()) {
             throw new Exception400("username과 password를 다시 확인해주세요.");
-
         }
         String jwt = JwtProvider.create(userOptional.get());
         User user = userOptional.get();

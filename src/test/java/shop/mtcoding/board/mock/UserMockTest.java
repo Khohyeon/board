@@ -2,10 +2,8 @@ package shop.mtcoding.board.mock;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,13 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.auth.JwtProvider;
-import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.config.SecurityConfig;
 import shop.mtcoding.board.core.WithMockCustomUser;
@@ -30,23 +24,19 @@ import shop.mtcoding.board.example.UserExample;
 import shop.mtcoding.board.module.user.controller.UserController;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
+import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.module.user.service.UserService;
-import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.status.UserStatus;
+
 import java.time.LocalDateTime;
-
-import static org.mockito.ArgumentMatchers.any;
-//import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -65,15 +55,13 @@ public class UserMockTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
-    private UserRepository userRepository;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("유저 전체 조회")
     void getUser() throws Exception {
-        Pageable pageable = PageRequest.of(1, 10);
+
+        Pageable pageable = UserExample.pageRequest;
         Page<User> page = new PageImpl<>(
                 List.of(
                         new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE),
@@ -281,25 +269,46 @@ public class UserMockTest {
         //given
         LoginRequest request = new LoginRequest("ssar", "1234", UserStatus.ACTIVE);
 
-        //mock test에 레파지토리 사용?
-        Optional<User> userOptional = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
-        given(this.userService.userLogin(request)).willReturn(userOptional);
+        given(this.userService.userLogin(request)).willReturn(Optional.of(UserExample.user));
 
-        if (userOptional.isPresent()) {
-            String jwt = JwtProvider.create(userOptional.get());
             // when
             ResultActions perform = this.mvc.perform(
                     post("/users/login")
                             .content(objectMapper.writeValueAsString(request))
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
             );
 
             // then
             perform.andExpect(status().isOk())
                     .andDo(print())
-                    .andExpect(jsonPath("$.msg").value("로그인 성공"));
-        }
+                    .andExpect(jsonPath("$.username").value("ssar"))
+                    .andExpect(jsonPath("$.password").value("1234"));
+
+    }
+
+    @Test
+    @DisplayName("유저 로그인 실패")
+    void loginUserFail2() throws Exception {
+
+        //given
+        LoginRequest request = new LoginRequest("ssar", "1234", UserStatus.ACTIVE);
+
+        given(this.userService.userLogin(request)).willReturn(Optional.empty());
+
+        // when
+        ResultActions perform = this.mvc.perform(
+                post("/users/login")
+                        .content(objectMapper.writeValueAsString(request))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        perform.andExpect(status().isBadRequest())
+                .andDo(print())
+                .andExpect(jsonPath("$.detail").value("username과 password를 다시 확인해주세요."));
+
     }
 
     @Test
@@ -308,16 +317,7 @@ public class UserMockTest {
 
         //given
         LoginRequest request = new LoginRequest("", "1234", UserStatus.ACTIVE);
-
-        //mock test에 레파지토리 사용?
-        Optional<User> userOptional = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
-
-        if (userOptional.isPresent()) {
-            String jwt = JwtProvider.create(userOptional.get());
-
-            given(this.userService.userLogin(request)).willReturn(userOptional);
-
-
+        given(this.userService.userLogin(request)).willReturn(Optional.of(new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE)));
 
             // when
             ResultActions perform = this.mvc.perform(
@@ -330,7 +330,7 @@ public class UserMockTest {
             // then
             perform.andExpect(status().isBadRequest())
                     .andDo(print())
-                    .andExpect(jsonPath("$.msg").value("유저 이름을 입력해주세요."));
+                    .andExpect(jsonPath("$.detail").value("유저 이름을 입력해주세요."));
         }
-    }
+
 }

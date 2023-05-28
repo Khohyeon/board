@@ -81,7 +81,7 @@ public class UserControllerTest extends AbstractIntegrated {
     @DisplayName("유저 회원가입 테스트")
     void userJoin() throws Exception {
 
-        JoinRequest joinDTO = new JoinRequest("ssar", "1234", "ssar@nate.com");
+        JoinRequest joinDTO = new JoinRequest("ho", "1234", "ho@nate.com");
 
 
         ResultActions perform = this.mockMvc.perform(
@@ -185,19 +185,6 @@ public class UserControllerTest extends AbstractIntegrated {
                         document("user-login-fail",
                                 responseFields(getFailResponseField())));
 
-    }
-
-    private FieldDescriptor[] getUserListResponseField() {
-        return new FieldDescriptor[]{
-                fieldWithPath("[].id").description("유저 id"),
-                fieldWithPath("[].username").description("유저 이름"),
-                fieldWithPath("[].password").description("유저 비밀번호"),
-                fieldWithPath("[].email").description("유저 이메일"),
-                fieldWithPath("[].role").description("유저 권한"),
-                fieldWithPath("[].status").description("유저 상태"),
-                fieldWithPath("[].createdDate").description("가입 시간"),
-                fieldWithPath("[].modifiedDate").description("수정 시간"),
-        };
     }
 
     private FieldDescriptor[] getUserResponseField() {

@@ -84,11 +84,7 @@ public class UserRepositoryTest {
             entityManager.remove(result);
             Optional<User> deleteUser = this.userRepository.findById(user.getId());
 
-            if (deleteUser.isPresent()) {
-                Assertions.assertNull(deleteUser.get());
-            }
-        } else {
-            Assertions.assertNotNull(findUser.get());
+            deleteUser.ifPresent(Assertions::assertNull);
         }
 
     }

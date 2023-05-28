@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.core.WithMockCustomUser;
+import shop.mtcoding.board.example.BoardExample;
 import shop.mtcoding.board.module.board.controller.BoardController;
 import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
 import shop.mtcoding.board.module.board.dto.BoardRequest;
@@ -53,26 +54,14 @@ public class BoardMockTest {
     @MockBean
     private BoardService boardService;
 
-    @MockBean
-    private BoardRepository boardRepository;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    public void setup() {
-        // 인증된 Mock 사용자 설정
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-    }
 
 
     @Test
     @DisplayName("게시판 조회")
     @WithMockUser(username = "cos", roles = "USER")
     void getBoard() throws Exception {
-        Pageable pageable = PageRequest.of(1, 10);
+        Pageable pageable = BoardExample.pageRequest;
         User user1 = new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE);
         User user2 = new User(2, "cos", "1234", "cos@nate.com", RoleType.USER, UserStatus.ACTIVE);
         Page<Board> page = new PageImpl<>(
@@ -262,7 +251,6 @@ public class BoardMockTest {
 
     @Test
     @DisplayName("게시판 수정 성공")
-//    @WithMockUser(username = "cos", roles = "USER")
     @WithMockCustomUser()
     void updateBoard() throws Exception {
 

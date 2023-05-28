@@ -23,6 +23,7 @@ import shop.mtcoding.board.module.board.model.BoardModel;
 import shop.mtcoding.board.module.board.service.BoardService;
 import shop.mtcoding.board.module.user.model.User;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,8 @@ public class BoardController {
 
     @GetMapping("/board")
     public ResponseEntity<PagedModel<BoardModel>> getPage(Pageable pageable,
-                                                          PagedResourcesAssembler<Board> assembler) {
+        PagedResourcesAssembler<Board> assembler) {
+
         Page<Board> page = boardService.getPage(pageable);
 
         return ResponseEntity.ok(assembler.toModel(page, new BoardModelAssembler()));
@@ -45,7 +47,6 @@ public class BoardController {
     public ResponseEntity<BoardModel> getBoard(@PathVariable Integer id) {
 
         Optional<Board> boardOptional = boardService.getBoard(id);
-
 
         if (boardOptional.isEmpty()) {
             throw new Exception400("게시판의 정보가 없습니다.");
@@ -68,19 +69,17 @@ public class BoardController {
 
     @PutMapping("/user/board/{id}")
     public ResponseEntity<BoardResponse> updateBoard(@Valid @RequestBody BoardUpdateRequest boardUpdateRequest
-            , Errors errors , @PathVariable Integer id , @AuthenticationPrincipal MyUserDetails myUserDetails
-                                                     ) {
-
+            , Errors errors , @PathVariable Integer id
+            ) {
         if (errors.hasErrors()) {
             throw new Exception400(errors.getAllErrors().get(0).getDefaultMessage());
         }
 
-        Optional<Board> boardOptional = boardService.getBoard(myUserDetails.getUser().getId());
+        Optional<Board> boardOptional = boardService.getBoard(id);
 
         if (boardOptional.isEmpty()) {
             throw new Exception400("게시판의 정보가 없습니다.");
         }
-
         BoardResponse board = boardService.update(boardUpdateRequest, boardOptional.get());
 
         return ResponseEntity.ok().body(board);
@@ -88,6 +87,7 @@ public class BoardController {
 
     @DeleteMapping("/user/board/{id}")
     public ResponseEntity<String> deleteBoard(@PathVariable Integer id) {
+
         Optional<Board> boardOptional = boardService.getBoard(id);
 
         if (boardOptional.isEmpty()) {
