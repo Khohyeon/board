@@ -1,4 +1,4 @@
-package shop.mtcoding.board.controller;
+package shop.mtcoding.board.integrated;
 
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,17 +8,14 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.board.core.WithMockCustomUser;
-import shop.mtcoding.board.interfaceTest.AbstractIntegrated;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,25 +35,6 @@ public class UserControllerTest extends AbstractIntegrated {
                 .andDo(
                         document("user-list",
                                 responseFields(
-                                ).and(getUserListResponseField())
-                        )
-
-                );
-    }
-
-    @Test
-    @DisplayName("유저 전체보기 페이지 테스트")
-    void getPage() throws Exception {
-
-        this.mockMvc.perform(
-                        get("/users/page")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(
-                        document("user-list-page",
-                                responseFields(
                                 ).and(getUserListPageResponseField())
                         )
 
@@ -68,7 +46,7 @@ public class UserControllerTest extends AbstractIntegrated {
     void detailUser() throws Exception {
 
         this.mockMvc.perform(
-                        get("/users/detail")
+                        get("/users/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .header("Authorization", getUser())
                 )
@@ -88,14 +66,15 @@ public class UserControllerTest extends AbstractIntegrated {
     void detailUserFail() throws Exception {
 
         this.mockMvc.perform(
-                        get("/users/detail")
+                        get("/users/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
 //                                .header("Authorization", getUser())
                 )
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(
-                        document("user-detail-fail"));
+                        document("user-detail-fail",
+                                responseFields(getFailResponseField())));
     }
 
     @Test
@@ -153,7 +132,7 @@ public class UserControllerTest extends AbstractIntegrated {
     @DisplayName("유저 로그인 테스트")
     void userLogin() throws Exception {
 
-        LoginRequest loginDTO = new LoginRequest("cos", "1234");
+        LoginRequest loginDTO = new LoginRequest("cos", "1234", UserStatus.ACTIVE);
 
 
         ResultActions perform = this.mockMvc.perform(
@@ -185,7 +164,7 @@ public class UserControllerTest extends AbstractIntegrated {
     @DisplayName("유저 로그인 실패 테스트")
     void userLoginFail() throws Exception {
 
-        LoginRequest loginDTO = new LoginRequest("", "1234");
+        LoginRequest loginDTO = new LoginRequest("", "1234", UserStatus.ACTIVE);
 
 
         ResultActions perform = this.mockMvc.perform(
@@ -216,6 +195,8 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("[].email").description("유저 이메일"),
                 fieldWithPath("[].role").description("유저 권한"),
                 fieldWithPath("[].status").description("유저 상태"),
+                fieldWithPath("[].createdDate").description("가입 시간"),
+                fieldWithPath("[].modifiedDate").description("수정 시간"),
         };
     }
 
@@ -225,6 +206,10 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("username").description("유저 이름"),
                 fieldWithPath("password").description("유저 비밀번호"),
                 fieldWithPath("email").description("유저 이메일"),
+                fieldWithPath("role").description("유저 권한"),
+                fieldWithPath("createDate").description("유저 생성 시간"),
+                fieldWithPath("status").description("유저 활성화 상태"),
+                fieldWithPath("_links.self.href").description("유저 상세보기 URL"),
         };
     }
 
@@ -244,6 +229,8 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("email").description("유저 이메일"),
                 fieldWithPath("role").description("유저 권한"),
                 fieldWithPath("status").description("유저 활성화상태"),
+                fieldWithPath("createdDate").description("가입 시간"),
+                fieldWithPath("modifiedDate").description("수정 시간"),
         };
     }
 
@@ -251,6 +238,7 @@ public class UserControllerTest extends AbstractIntegrated {
         return new FieldDescriptor[]{
                 fieldWithPath("username").description("유저이름"),
                 fieldWithPath("password").description("비밀번호"),
+                fieldWithPath("status").description("유저 활성화상태"),
         };
     }
 
@@ -262,39 +250,27 @@ public class UserControllerTest extends AbstractIntegrated {
                 fieldWithPath("email").description("유저 이메일"),
                 fieldWithPath("role").description("유저 권한"),
                 fieldWithPath("status").description("유저 활성화상태"),
+                fieldWithPath("createdDate").description("가입 시간"),
+                fieldWithPath("modifiedDate").description("수정 시간"),
         };
     }
 
 
     private FieldDescriptor[] getUserListPageResponseField() {
         return new FieldDescriptor[]{
-                fieldWithPath("content[].id").description("유저 id"),
-//                fieldWithPath("content[].title").description("게시판 제목"),
-//                fieldWithPath("content[].content").description("게시판 내용"),
-                fieldWithPath("content[].username").description("유저 이름"),
-                fieldWithPath("content[].password").description("유저 비밀번호"),
-                fieldWithPath("content[].email").description("유저 이메일"),
-                fieldWithPath("content[].role").description("유저 권한"),
-                fieldWithPath("pageable.sort").description("정렬 정보"),
-                fieldWithPath("pageable.sort.empty").description("정렬 없음"),
-                fieldWithPath("pageable.sort.sorted").description("정렬됨"),
-                fieldWithPath("pageable.sort.unsorted").description("정렬되지 않음"),
-                fieldWithPath("pageable.offset").description("오프셋"),
-                fieldWithPath("pageable.pageSize").description("페이지 크기"),
-                fieldWithPath("pageable.pageNumber").description("페이지 번호"),
-                fieldWithPath("pageable.paged").description("페이징 여부"),
-                fieldWithPath("pageable.unpaged").description("페이징 안함"),
-                fieldWithPath("last").description("마지막 페이지 여부"),
-                fieldWithPath("totalPages").description("전체 페이지 수"),
-                fieldWithPath("totalElements").description("전체 요소 수"),
-                fieldWithPath("size").description("현재 페이지 크기"),
-                fieldWithPath("number").description("현재 페이지 번호"),
-                fieldWithPath("sort.empty").description("정렬 정보 없음"),
-                fieldWithPath("sort.sorted").description("정렬됨"),
-                fieldWithPath("sort.unsorted").description("정렬되지 않음"),
-                fieldWithPath("first").description("첫 번째 페이지 여부"),
-                fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
-                fieldWithPath("empty").description("비어 있는지 여부")
+                fieldWithPath("_embedded.users[].id").description("유저 id"),
+                fieldWithPath("_embedded.users[].username").description("유저 이름"),
+                fieldWithPath("_embedded.users[].password").description("유저 비밀번호"),
+                fieldWithPath("_embedded.users[].email").description("유저 이메일"),
+                fieldWithPath("_embedded.users[].role").description("유저 권한"),
+                fieldWithPath("_embedded.users[].createDate").description("유저 생성시간"),
+                fieldWithPath("_embedded.users[].status").description("유저 상태코드"),
+                fieldWithPath("_embedded.users[]._links.self.href").description("url"),
+                fieldWithPath("_links.self.href").description("page url"),
+                fieldWithPath("page.size").description("page 사이즈"),
+                fieldWithPath("page.totalElements").description("page 총 개수"),
+                fieldWithPath("page.totalPages").description("page 총 개수"),
+                fieldWithPath("page.number").description("page 번호"),
 
 
         };

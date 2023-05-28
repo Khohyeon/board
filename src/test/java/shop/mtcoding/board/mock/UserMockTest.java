@@ -22,8 +22,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.mtcoding.board.auth.JwtProvider;
+import shop.mtcoding.board.auth.MyUserDetails;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.config.SecurityConfig;
 import shop.mtcoding.board.core.WithMockCustomUser;
+import shop.mtcoding.board.example.UserExample;
 import shop.mtcoding.board.module.user.controller.UserController;
 import shop.mtcoding.board.module.user.dto.JoinRequest;
 import shop.mtcoding.board.module.user.dto.LoginRequest;
@@ -31,6 +34,7 @@ import shop.mtcoding.board.module.user.model.UserRepository;
 import shop.mtcoding.board.module.user.service.UserService;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.user.status.UserStatus;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 //import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -38,6 +42,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,45 +70,14 @@ public class UserMockTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
-    public void setup() {
-        // 인증된 Mock 사용자 설정
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-    }
-
     @Test
-    @DisplayName("유저 전체조회 성공")
-    void ListUser() throws Exception {
-
-        // given
-        List<User> users = userRepository.findAll();
-        given(this.userService.userList()).willReturn(users);
-
-        // When
-        ResultActions perform = this.mvc.perform(
-                get("/users")
-                        .accept(MediaType.APPLICATION_JSON)
-        );
-
-
-        // Then
-        perform
-                .andExpect(status().isOk())
-                .andDo(print())
-        ;
-    }
-
-    @Test
-    @DisplayName("유저 조회 페이지")
+    @DisplayName("유저 전체 조회")
     void getUser() throws Exception {
         Pageable pageable = PageRequest.of(1, 10);
         Page<User> page = new PageImpl<>(
                 List.of(
-                        new User(1, "ssar", "1234", "ssar@nate.com", "USER", UserStatus.ACTIVE),
-                        new User(2, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE)
+                        new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE),
+                        new User(2, "cos", "1234", "cos@nate.com", RoleType.USER, UserStatus.ACTIVE)
                 )
         );
 
@@ -113,7 +87,7 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/page?page={page}&size={size}", 1, 10)
+                get("/users?page={page}&size={size}", 1, 10)
                         .accept(MediaType.APPLICATION_JSON)
 
         );
@@ -123,24 +97,25 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.content[0].id").value(1))
-                .andExpect(jsonPath("$.content[0].username").value("ssar"))
-                .andExpect(jsonPath("$.content[0].password").value("1234"))
-                .andExpect(jsonPath("$.content[0].email").value("ssar@nate.com"))
-                .andExpect(jsonPath("$.content[0].role").value("USER"))
+                .andExpect(jsonPath("$._embedded.users[0].id").value(1))
+                .andExpect(jsonPath("$._embedded.users[0].username").value("ssar"))
+                .andExpect(jsonPath("$._embedded.users[0].password").value("1234"))
+                .andExpect(jsonPath("$._embedded.users[0].email").value("ssar@nate.com"))
+                .andExpect(jsonPath("$._embedded.users[0].role").value("USER"))
+                .andExpect(jsonPath("$._embedded.users[0]._links.self.href").value("http://localhost/users/1"))
 
 
-                .andExpect(jsonPath("$.content[1].id").value(2))
-                .andExpect(jsonPath("$.content[1].username").value("cos"))
-                .andExpect(jsonPath("$.content[1].password").value("1234"))
-                .andExpect(jsonPath("$.content[1].email").value("cos@nate.com"))
-                .andExpect(jsonPath("$.content[1].role").value("USER"))
+                .andExpect(jsonPath("$._embedded.users[1].id").value(2))
+                .andExpect(jsonPath("$._embedded.users[1].username").value("cos"))
+                .andExpect(jsonPath("$._embedded.users[1].password").value("1234"))
+                .andExpect(jsonPath("$._embedded.users[1].email").value("cos@nate.com"))
+                .andExpect(jsonPath("$._embedded.users[1].role").value("USER"))
+                .andExpect(jsonPath("$._embedded.users[1]._links.self.href").value("http://localhost/users/2"))
         ;
     }
 
     @Test
-    @DisplayName("유저 상세조회 실패")
-    @WithMockCustomUser
+    @DisplayName("유저 상세조회 시큐리티에 걸리는 실패(인증 x)")
     void getUserFail() throws Exception {
 
         // given
@@ -149,7 +124,57 @@ public class UserMockTest {
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/detail")
+                get("/users/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+
+        // Then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andExpect(jsonPath("$.detail").value("인증되지 않았습니다"))
+        ;
+    }
+
+    @Test
+    @DisplayName("유저 상세조회 실패(권한이 다름)")
+    @WithMockCustomUser(id = 2, username = "cos", role = RoleType.MANAGER)
+    void getUserFail2() throws Exception {
+
+        // given
+        int id = 0;
+        given(this.userService.getUser(id)).willReturn(Optional.empty());
+
+        // When
+        ResultActions perform = this.mvc.perform(
+                get("/users/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        );
+
+
+        // Then
+        perform
+                .andExpect(status().isForbidden())
+                .andDo(print())
+                .andExpect(jsonPath("$.detail").value("권한이 없습니다."))
+        ;
+    }
+
+    @Test
+    @DisplayName("유저 상세조회 실패(유저가 없음)")
+    @WithMockCustomUser
+    void getUserFail3() throws Exception {
+
+        // given
+        int id = 0;
+        given(this.userService.getUser(id)).willReturn(Optional.empty());
+
+        // When
+        ResultActions perform = this.mvc.perform(
+                get("/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
@@ -165,22 +190,23 @@ public class UserMockTest {
 
     @Test
     @DisplayName("유저 상세조회")
-    @WithMockCustomUser()
+    @WithMockCustomUser
     void getUserDetail() throws Exception {
 
-        // given
-        int id = 1;
-        given(this.userService.getUser(id))
-                .willReturn(
-                        Optional.of(new User(1, "cos", "1234", "cos@nate.com", "USER", UserStatus.ACTIVE))
-                );
+        User user = UserExample.user;
+        LocalDateTime now = LocalDateTime.now();
+        user.changeCreatedDate(now);
 
+        // given
+        given(this.userService.getUser(user.getId()))
+                .willReturn(
+                        Optional.of( new User(1, "ssar", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE))
+                );
 
         // When
         ResultActions perform = this.mvc.perform(
-                get("/users/detail")
+                get("/users/{id}", user.getId())
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
 
@@ -188,9 +214,14 @@ public class UserMockTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.username").value("cos"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("ssar"))
                 .andExpect(jsonPath("$.password").value("1234"))
-                .andExpect(jsonPath("$.email").value("cos@nate.com"))
+                .andExpect(jsonPath("$.email").value("ssar@nate.com"))
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.createDate").value(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
+                .andExpect(jsonPath("$.status").value(UserStatus.ACTIVE.name()))
+                .andExpect(jsonPath("$._links").exists());
         ;
     }
 
@@ -248,7 +279,7 @@ public class UserMockTest {
     void loginUser() throws Exception {
 
         //given
-        LoginRequest request = new LoginRequest("ssar", "1234");
+        LoginRequest request = new LoginRequest("ssar", "1234", UserStatus.ACTIVE);
 
         //mock test에 레파지토리 사용?
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
@@ -276,7 +307,7 @@ public class UserMockTest {
     void loginUserFail() throws Exception {
 
         //given
-        LoginRequest request = new LoginRequest("", "1234");
+        LoginRequest request = new LoginRequest("", "1234", UserStatus.ACTIVE);
 
         //mock test에 레파지토리 사용?
         Optional<User> userOptional = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());

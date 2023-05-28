@@ -37,7 +37,7 @@ public class WithMockCustomAdminAccountSecurityContextFactory implements WithSec
 		var accountDetails =  new User(
 				admin.getUsername(),
 				admin.getPassword(),
-				List.of(new SimpleGrantedAuthority(admin.getRole()))
+				List.of(new SimpleGrantedAuthority(admin.getRole().name()))
 		);
 
 		var securityContext = SecurityContextHolder.createEmptyContext();

@@ -152,6 +152,3 @@ include::{snippets}/board-delete/httpie-request.adoc[]
 
 === 응답 정보 [HTTP]
 include::{snippets}/board-delete/http-response.adoc[]
-
-=== 응답 정보 [Field]
-include::{snippets}/board-delete/response-fields.adoc[]

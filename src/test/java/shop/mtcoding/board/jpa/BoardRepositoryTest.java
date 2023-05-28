@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.board.model.Board;
 import shop.mtcoding.board.module.board.model.BoardRepository;
 import shop.mtcoding.board.module.user.model.User;
@@ -43,7 +44,7 @@ public class BoardRepositoryTest {
         Assertions.assertNotEquals(boardList.size(), 0);
 
         Board board = boardList.get(0);
-        Assertions.assertEquals(board.getTitle(), "제목1");
+        Assertions.assertEquals(board.getTitle(), "제목입니다 1");
 
     }
 
@@ -55,7 +56,7 @@ public class BoardRepositoryTest {
 
         if (optionalBoard.isPresent()) {
             Board board = optionalBoard.get();
-            Assertions.assertEquals(board.getTitle() , "제목1");
+            Assertions.assertEquals(board.getTitle() , "제목입니다 1");
         }
     }
 
@@ -98,7 +99,7 @@ public class BoardRepositoryTest {
 
     public Board setUp(String title, String content, BoardStatus status) {
 
-        User user = new User().builder().username("love").password("1234").email("love@nate.com").role("USER").status(UserStatus.ACTIVE).build();
+        User user = new User().builder().username("love").password("1234").email("love@nate.com").role(RoleType.USER).status(UserStatus.ACTIVE).build();
         this.entityManager.persist(user);
 
         Board board = new Board();

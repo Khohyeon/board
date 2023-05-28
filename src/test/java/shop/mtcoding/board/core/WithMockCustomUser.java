@@ -17,6 +17,8 @@
 package shop.mtcoding.board.core;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
+import shop.mtcoding.board.common.RoleType;
+import shop.mtcoding.board.module.user.status.UserStatus;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,8 +28,8 @@ import java.lang.annotation.RetentionPolicy;
 public @interface WithMockCustomUser {
 
 	int id() default 1;
-	String username() default "cos";
-	String role() default "USER";
-	String email() default "cos@nate.com";
-
+	String username() default "ssar";
+	RoleType role() default RoleType.USER;
+	String email() default "ssar@nate.com";
+	UserStatus status() default UserStatus.ACTIVE;
 }

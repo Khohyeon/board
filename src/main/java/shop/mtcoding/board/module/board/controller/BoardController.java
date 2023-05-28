@@ -5,45 +5,53 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.board.auth.MyUserDetails;
 import shop.mtcoding.board.exception.Exception400;
-import shop.mtcoding.board.module.board.dto.BoardDTO;
-import shop.mtcoding.board.module.board.dto.BoardRequest;
-import shop.mtcoding.board.module.board.dto.BoardResponse;
-import shop.mtcoding.board.module.board.dto.BoardUpdateRequest;
+import shop.mtcoding.board.module.board.assemble.BoardModelAssembler;
+import shop.mtcoding.board.module.board.dto.*;
 import shop.mtcoding.board.module.board.model.Board;
+import shop.mtcoding.board.module.board.model.BoardModel;
 import shop.mtcoding.board.module.board.service.BoardService;
+import shop.mtcoding.board.module.user.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@ExposesResourceFor(BoardModel.class)
 public class BoardController {
 
     private final BoardService boardService;
 
     @GetMapping("/board")
-    public ResponseEntity<Page<BoardDTO>> getPage(Pageable pageable) {
+    public ResponseEntity<PagedModel<BoardModel>> getPage(Pageable pageable,
+                                                          PagedResourcesAssembler<Board> assembler) {
         Page<Board> page = boardService.getPage(pageable);
-        List<BoardDTO> content = page.getContent().stream().map(Board::toDTO).toList();
 
-        return ResponseEntity.ok(new PageImpl<>(content, pageable, page.getTotalElements()));
+        return ResponseEntity.ok(assembler.toModel(page, new BoardModelAssembler()));
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<BoardResponse> getBoard(@PathVariable Integer id) {
+    public ResponseEntity<BoardModel> getBoard(@PathVariable Integer id) {
+
         Optional<Board> boardOptional = boardService.getBoard(id);
+
 
         if (boardOptional.isEmpty()) {
             throw new Exception400("게시판의 정보가 없습니다.");
         }
 
-        return ResponseEntity.ok().body(boardOptional.get().toResponse());
+        return ResponseEntity.ok(new BoardModelAssembler().toModel(boardOptional.get()));
     }
 
     @PostMapping("/user/board")

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import shop.mtcoding.board.common.BaseTime;
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.dto.UserDTO;
 import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.status.UserStatus;
@@ -12,7 +14,7 @@ import shop.mtcoding.board.module.user.status.UserStatus;
 @Data
 @NoArgsConstructor
 @Table(name = "USERS")
-public class User {
+public class User extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +26,14 @@ public class User {
 
     private String email;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Builder
-    public User(Integer id, String username, String password, String email, String role, UserStatus status) {
+    public User(Integer id, String username, String password, String email, RoleType role, UserStatus status) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -45,7 +48,7 @@ public class User {
         this.email = email;
     }
 
-    public User(String username, String password, String email, String role, UserStatus status) {
+    public User(String username, String password, String email, RoleType role, UserStatus status) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -53,11 +56,12 @@ public class User {
         this.status = status;
     }
 
-    public UserDTO toDTO() {
-        return new UserDTO(id, username, password, email, role);
+    public UserModel toUserModel() {
+        return new UserModel(User.builder().build());
     }
 
     public UserResponse toResponse() {
         return new UserResponse(id, username, password, email);
     }
+
 }

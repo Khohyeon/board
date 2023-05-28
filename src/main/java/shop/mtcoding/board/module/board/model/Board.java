@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import shop.mtcoding.board.common.BaseTime;
 import shop.mtcoding.board.module.board.dto.BoardDTO;
 import shop.mtcoding.board.module.board.dto.BoardResponse;
+import shop.mtcoding.board.module.board.dto.BoardLinkResponse;
 import shop.mtcoding.board.module.user.model.User;
 import shop.mtcoding.board.module.board.status.BoardStatus;
 
@@ -48,5 +49,9 @@ public class Board extends BaseTime {
 
     public BoardResponse toResponse() {
         return new BoardResponse(title, content);
+    }
+
+    public BoardLinkResponse toResponse1(String link) {
+        return new BoardLinkResponse(title, content, link);
     }
 }

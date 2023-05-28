@@ -35,7 +35,7 @@ public class WithMockCustomAccountSecurityContextFactory implements WithSecurity
 				.password("1234")
 				.email(mockCustomUser.email())
 				.role(mockCustomUser.role())
-				.status(UserStatus.ACTIVE)
+				.status(mockCustomUser.status())
 				.build();
 		var MyUserDetails = new MyUserDetails(user);
 

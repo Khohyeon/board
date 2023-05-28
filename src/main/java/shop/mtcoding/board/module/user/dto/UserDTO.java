@@ -1,5 +1,6 @@
 package shop.mtcoding.board.module.user.dto;
 
+import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.model.User;
 
 public record UserDTO(
@@ -7,7 +8,7 @@ public record UserDTO(
         String username,
         String password,
         String email,
-        String role
+        RoleType role
 ) {
 
     public User toEntity() {
