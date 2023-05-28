@@ -28,21 +28,16 @@ public class BoardService {
         return boardRepository.findById(id);
     }
 
+    @Transactional
     public BoardResponse save(BoardRequest boardRequest) {
         return boardRepository.save(boardRequest.toEntity()).toResponse();
     }
 
+    @Transactional
     public BoardResponse update(BoardUpdateRequest boardUpdateRequest, Board board) {
         board.setTitle(boardUpdateRequest.title());
         board.setContent(boardUpdateRequest.content());
         return boardRepository.save(board).toResponse();
-//        return null;
-    }
-    public Board update1(BoardUpdateRequest boardUpdateRequest, int id) {
-//        board.setTitle(boardUpdateRequest.title());
-//        board.setContent(boardUpdateRequest.content());
-//        return boardRepository.save(board);
-        return null;
     }
 
     public void delete(Board board) {

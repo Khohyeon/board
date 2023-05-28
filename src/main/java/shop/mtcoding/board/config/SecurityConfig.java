@@ -60,8 +60,8 @@ public class SecurityConfig {
         http.csrf().disable(); // postman 으로 접근하기 위해 토큰을 비활성화 - csr 이용 , 반면에 ssr이라면 ?
         // ssr은 기본적으로 csrf 토큰을 이용하지 않지만 적용할 수 있다.
 
-        // 2. iframe 차단설정
-        http.headers().frameOptions().disable();
+        // 2. 같은 도메인에서 iframe 허용 (최소한 권한)
+        http.headers().frameOptions().sameOrigin();
 
         // 3. cors 재설정
         http.cors().configurationSource(configurationSource());
@@ -83,7 +83,7 @@ public class SecurityConfig {
 
         // 6. http bagic 인증 해제 - 모든 페이지마다 로그인을 해야함.. 안전하지만 너무 불편하다
         // BasinAuthenticationFilter 해제
-        // http.httpBasic().disable();
+//         http.httpBasic().disable();
 
         // 2가지 방법 disable 안하고 addFilterAt 사용해서 바꿔치는 방법도 있음
         // disable 하고 다시 등록하는 방법도 있고

@@ -88,23 +88,6 @@ public class AbstractIntegrated {
         }
     }
 
-
-    protected FieldDescriptor[] getPageResponseField() {
-        return new FieldDescriptor[] {
-                subsectionWithPath("content").description("내용 배열"),
-                subsectionWithPath("pageable").description("page 종합 정보"),
-                fieldWithPath("last").description("마지막 페이지 여부"),
-                fieldWithPath("totalPages").description("총 페이지 수"),
-                fieldWithPath("totalElements").description("총 요소 수"),
-                fieldWithPath("size").description("페이지당 요소 수"),
-                fieldWithPath("number").description("현재 페이지"),
-                subsectionWithPath("sort").description("정렬"),
-                fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
-                fieldWithPath("first").description("첫 페이지 여부"),
-                fieldWithPath("empty").description("빈 페이지 여부")
-        };
-    }
-
     protected FieldDescriptor[] getSuccessResponseField() {
         return new FieldDescriptor[] {
                 fieldWithPath("type").description("type"),
@@ -123,12 +106,6 @@ public class AbstractIntegrated {
                 fieldWithPath("instance").description("에러 코드"),
                 fieldWithPath("status").description("에러 상태코드"),
         };
-    }
-
-    protected List<ParameterDescriptor> getPageParameterDescriptors (){
-        return List.of(parameterWithName("page").description("The page to retrieve"),
-                parameterWithName("size").description("The page to retrieve"),
-                parameterWithName("sort").description("The page to retrieve"));
     }
 
 }

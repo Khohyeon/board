@@ -1,9 +1,8 @@
 package shop.mtcoding.board.module.user.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.mtcoding.board.common.BaseTime;
 import shop.mtcoding.board.common.RoleType;
 import shop.mtcoding.board.module.user.dto.UserDTO;
@@ -11,7 +10,8 @@ import shop.mtcoding.board.module.user.dto.UserResponse;
 import shop.mtcoding.board.module.user.status.UserStatus;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "USERS")
 public class User extends BaseTime {

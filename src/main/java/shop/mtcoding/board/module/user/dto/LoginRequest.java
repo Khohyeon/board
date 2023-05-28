@@ -1,22 +1,16 @@
 package shop.mtcoding.board.module.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
 import shop.mtcoding.board.module.user.status.UserStatus;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class LoginRequest {
+
+public record LoginRequest (
 
     @NotBlank(message = "유저 이름을 입력해주세요.")
-    private String username;
+    String username,
 
     @NotBlank(message = "유저  비밀번호를 입력해주세요.")
-    private String password;
+    String password,
 
-    private UserStatus status;
-
-}
+    UserStatus status
+) {}

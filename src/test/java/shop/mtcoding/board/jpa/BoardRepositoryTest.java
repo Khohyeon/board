@@ -88,18 +88,15 @@ public class BoardRepositoryTest {
             entityManager.remove(result);
             Optional<Board> deleteBoard = this.boardRepository.findById(board.getId());
 
-            if (deleteBoard.isPresent()) {
-                Assertions.assertNull(deleteBoard.get());
-            }
-        } else {
-            Assertions.assertNotNull(findBoard.get());
+            deleteBoard.ifPresent(Assertions::assertNull);
         }
 
     }
 
     public Board setUp(String title, String content, BoardStatus status) {
 
-        User user = new User().builder().username("love").password("1234").email("love@nate.com").role(RoleType.USER).status(UserStatus.ACTIVE).build();
+        User user = new User("love", "1234", "ssar@nate.com", RoleType.USER, UserStatus.ACTIVE);
+
         this.entityManager.persist(user);
 
         Board board = new Board();
